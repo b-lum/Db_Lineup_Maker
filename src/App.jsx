@@ -34,68 +34,6 @@ function App() {
     });
   }
 
-  const lineupSwap = (row, col) => {
-    let sourceCell = null;
-    
-    return {
-      onDragStart : e => {
-        sourceCell = { row, col };
-        e.dataTransfer.setData("text/plain", JSON.stringify(sourceCell));
-      },
-      onDragOver : e => e.preventDefault(),
-      onDrop : e => {
-        e.preventDefault();
-        console.log("Dropped on cell:", row, col);
-        const source = JSON.parse(e.dataTransfer.getData("text/plain"));
-        const newLineup = new Lineup();
-
-        // Deep copy the grid from the old lineup
-        newLineup.grid = lineup.grid.map(r => [...r]);
-        newLineup.leftWeight = lineup.leftWeight;
-        newLineup.rightWeight = lineup.rightWeight;
-        newLineup.swapPerson(source.row, source.col, row, col);
-        setLineup(newLineup);
-      }
-    }
-  }
-
-  const moveFromPeooples = (row, col) => {
-    let sourceCell = null;
-
-    return {
-      onDragStart: e => {
-        sourceCell = { row, col };
-        e.dataTransfer.setData("text/plain", JSON.stringify(sourceCell));
-      },
-      onDragOver: e => e.preventDefault(),
-      onDrop: e => {
-        e.preventDefault();
-        const source = JSON.parse(e.dataTransfer.getData("text/plain"));
-
-        // Moving from sorted lineup to main lineup
-        const peopleArray = peoples.getAll();
-        const person = peopleArray[source.row * 2 + source.col];
-        if (!person) return;
-
-        // remove from small lineup
-        const newSorted = new SortedArray(compareByWeight);
-        peopleArray.forEach(p => {
-          if (p !== person) newSorted.add(p);
-        });
-        setPeoples(newSorted);
-
-        // add to main lineup
-        const newLineup = new Lineup();
-        newLineup.grid = lineup.grid.map(r => [...r]);
-        newLineup.leftWeight = lineup.leftWeight;
-        newLineup.rightWeight = lineup.rightWeight;
-        newLineup.addPerson(row, col, person);
-        setLineup(newLineup);
-        
-      }
-    }
-  }
-
   const dragHandler = (gridType, row, col) => {
     return {
       onDragStart: e => {
