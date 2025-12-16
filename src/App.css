@@ -1,0 +1,64 @@
+.app-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.lineup-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 20px;
+  width: max-content;
+}
+
+.lineup-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.lineup-cell {
+  padding: 10px;
+  width: 80px;
+  height: 40px;
+  border: 1px solid #9cd4ff;
+  text-align: center;
+  background-color: #137297;
+  border-radius: 5px;
+  font-weight: bold;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.person-name {
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: -20px;
+  display: inline-block;
+  color: #ffffff;
+}
+
+/* Highlight cell being dragged */
+.lineup-cell.dragging {
+  opacity: 1.0;
+  background-color: #073356;
+}
+
+/* Highlight drop target */
+.lineup-cell.hovered {
+  background-color: #ffcc80;
+}
+
+.lineup-container {
+  display: flex;       /* put children side by side */
+  gap: 50px;           /* space between grids */
+  align-items: flex-start;
+  flex-wrap: wrap; 
+}
+
+p {
+  margin-top: 20px;
+  font-weight: bold;
+}
