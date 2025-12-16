@@ -7,8 +7,6 @@ import Papa from "papaparse";
 function App() {
   const [lineup, setLineup] = useState(() => {
     const l = new Lineup();
-    l.addPerson(5, 0, new Person("Alice", 150, 12));
-    l.addPerson(5, 1, new Person("Bob", 180, 15));
     return l;
   });
 
