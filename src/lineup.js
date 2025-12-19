@@ -19,24 +19,33 @@ class Lineup {
    constructor() {
       const rows = 11
       const cols = 2
+      this.peopleSet = new Set();
       this.grid = Array.from({length : rows}, () => Array(cols).fill(null));
       this.leftWeight = 0
       this.rightWeight = 0
    }
 
    addPerson(row, col, person) {
-
-      if (person === null) {
-         this.grid[row][col] = null;
-         return;
+      // Check for null or duplicate by name
+      if (person === null || this.peopleSet.has(person.name)) {
+         console.log(`Cannot add ${person?.name || "null"}: already in lineup or invalid`);
+         return; // just exit without modifying the grid
       }
+
+      // Bounds check
       if (row < 0 || row >= this.grid.length || col < 0 || col >= this.grid[0].length) {
          throw new Error("Invalid row or column");
       }
 
+      // Add person to grid
       this.grid[row][col] = person;
-      if (col === 0 && row !== 0) this.leftWeight += person.weight;
-      else if (col === 1 && row !== 0) this.rightWeight += person.weight;
+      this.peopleSet.add(person.name);
+
+      // Update weights if not in first row
+      if (row !== 0) {
+         if (col === 0) this.leftWeight += person.weight;
+         else if (col === 1) this.rightWeight += person.weight;
+      }
 
       console.log(`Added ${person.name} to row ${row}, column ${col}`);
    }
@@ -45,12 +54,13 @@ class Lineup {
       let p = this.grid[row][col];
       
       if (p !== null) {
-      if (col === 0 && row !== 0) this.leftWeight -= p.weight;
-      else if (col === 1 && row !== 0) this.rightWeight -= p.weight;
+         if (col === 0 && row !== 0) this.leftWeight -= p.weight;
+         else if (col === 1 && row !== 0) this.rightWeight -= p.weight;
 
-      this.grid[row][col] = null
+         this.grid[row][col] = null
+         this.peopleSet.delete(p.name);
       
-      console.log(`Removed ${p.name} from row ${row}, column ${col}`);
+         console.log(`Removed ${p.name} from row ${row}, column ${col}`);
       } else {
          console.log(`No person to remove at row ${row}, column ${col}`);
       }
