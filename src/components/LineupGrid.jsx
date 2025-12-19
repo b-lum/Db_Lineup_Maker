@@ -10,7 +10,18 @@ export default function LineupGrid({
     <div className="lineup-grid">
       <p>{title}</p>
       {grid.map((row, i) => (
+
+        
         <div className="lineup-row" key={i}>
+
+          {gridType === "main" && (
+            i === 0 ? (
+               <div className = "lineup-label">Caller</div>
+            ) : (
+              <div className = "lineup-label">L {i}</div>
+            )
+          )}
+
           {row.map((p, j) => (
             <PersonCell
               key={j}
@@ -18,6 +29,15 @@ export default function LineupGrid({
               dragProps={dragHandler(gridType, i, j)}
             />
           ))}
+
+          {gridType === "main" && (
+            i === 0 ? (
+              <div className = "lineup-label">Steer</div>
+            ) : (
+              <div className = "lineup-label">R {i}</div>
+            )
+          )}
+
         </div>
       ))}
     </div>

@@ -14,8 +14,9 @@
 }
 
 .lineup-row {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  align-items: center; 
+  /*grid-template-columns: repeat(2, 1fr); */
   gap: 10px;
 }
 
@@ -30,6 +31,11 @@
   font-weight: bold;
   user-select: none;
   transition: background-color 0.2s;
+}
+
+.lineup-label {
+  width: 40px;
+  text-align: center;
 }
 
 .person-name {
@@ -56,6 +62,11 @@
   gap: 50px;           /* space between grids */
   align-items: flex-start;
   flex-wrap: wrap; 
+}
+
+.lineup-container > .item {
+  flex: 0 0 calc(33.33% - 10px); /* 3 items per row, minus gap */
+  box-sizing: border-box;
 }
 
 .scroll-container {

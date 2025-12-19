@@ -5,12 +5,21 @@ import Papa from "papaparse";
 import LineupGrid from "./components/LineupGrid.jsx";
 
 function App() {
-  const compareByWeight = (a, b) => a.weight - b.weight;
 
-  const [lineup, setLineup] = useState(() => new Lineup());
+  const num_heats = 3
+  const compareByWeight = (a, b) => a.weight - b.weight;
   const [peoples, setPeoples] = useState(
     () => new SortedArray(compareByWeight)
   );
+  const [lineups, setLineups] = useState(() => {
+    const map = new Map();
+    for (let i = 0; i < num_heats; i++) {
+      map.set(i, new Lineup());
+    }
+    return map;
+  });
+
+
 
   const populatePeople = event => {
     const file = event.target.files[0];
@@ -125,12 +134,24 @@ function App() {
       <h1>Dragon Boat Lineup</h1>
 
       <div className="lineup-container">
-        <LineupGrid
-          title="Boat Lineup"
-          grid={lineup.grid}
-          gridType="main"
-          dragHandler={dragHandler}
-        />
+
+        <div className = "lineup-container">
+          {Array.from(lineups).map(([idx, lineup]) => (
+            <div className="item" key = {idx}>
+              <LineupGrid
+              title={"heat " + (idx + 1)}
+              grid={lineup.grid}
+              gridType="main"
+              dragHandler={dragHandler}
+              />
+
+              <p>
+                Left Side Weight: {lineup.leftWeight} | Right Side Weight:{" "}
+                {lineup.rightWeight}
+              </p>
+            </div>
+          ))}
+        </div>
 
         <div className="scroll-container">
           <LineupGrid
@@ -143,12 +164,7 @@ function App() {
       </div>
 
       <div className="lineup-container">
-        <div>
-          <p>
-          Left Side Weight: {lineup.leftWeight} | Right Side Weight:{" "}
-          {lineup.rightWeight}
-          </p>
-        </div>
+        
         <div>
           <label>
             Upload CSV
