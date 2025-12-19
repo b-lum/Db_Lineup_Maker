@@ -6,7 +6,7 @@ import LineupGrid from "./components/LineupGrid.jsx";
 
 function App() {
 
-  const num_heats = 3
+  const num_heats = 2
   const compareByWeight = (a, b) => a.weight - b.weight;
   const [peoples, setPeoples] = useState(
     () => new SortedArray(compareByWeight)
@@ -38,16 +38,50 @@ function App() {
   };
 
   const movePerson = ({ from, to }) => {
-    if (from.grid === "main" && to.grid === "main") {
+
+    // swapping with same heat
+    if (from.grid === to.grid) {
+      const idx = parseInt(to.grid.split(",")[1]) - 1;
       const newLineup = new Lineup();
-      newLineup.grid = lineup.grid.map(r => [...r]);
-      newLineup.leftWeight = lineup.leftWeight;
-      newLineup.rightWeight = lineup.rightWeight;
+      const lineupToUpdate = lineups.get(idx)
+      newLineup.grid = lineupToUpdate.grid.map(r => [...r]);
+      newLineup.leftWeight = lineupToUpdate.leftWeight;
+      newLineup.rightWeight = lineupToUpdate.rightWeight;
       newLineup.swapPerson(from.row, from.col, to.row, to.col);
-      setLineup(newLineup);
+      const updatedMap = new Map(lineups);
+      updatedMap.set(idx, newLineup);
+      setLineups(updatedMap);
+      return;
+    }
+    
+    // to do bewtween different heats
+    if (from.grid.includes("heat") && to.grid.includes("heat")) {
+      const fromIdx = parseInt(from.grid.split(",")[1]) - 1;
+      const toIdx = parseInt(to.grid.split(",")[1]) - 1;
+      const fromLineup = lineups.get(fromIdx);
+      const toLineup = lineups.get(toIdx);
+      
+      const fromPerson = fromLineup.grid[from.row][from.col]
+      const toPerson = toLineup.grid[to.row][to.col]
+
+      const newFromLineup = new Lineup();
+      newFromLineup.grid = fromLineup.grid.map(r => [...r]);
+      newFromLineup.addPerson(from.row, from.col, toPerson)
+
+      const newToLineup = new Lineup();
+      newToLineup.grid = toLineup.grid.map(r => [...r]);
+      newToLineup.leftWeight = toLineup.leftWeight;
+      newToLineup.rightWeight = toLineup.rightWeight;
+      newToLineup.addPerson(to.row, to.col, fromPerson);
+      
+      const updatedMap = new Map(lineups);
+      updatedMap.set(fromIdx, newFromLineup);
+      updatedMap.set(toIdx, newToLineup);
+      setLineups(updatedMap);
+      return;
     }
 
-    if (from.grid === "sorted" && to.grid === "main") {
+    if (from.grid === "sorted" && to.grid.includes("heat")) {
       const peopleArray = peoples.getAll();
       const index = from.row * 2 + from.col;
       const person = peopleArray[index];
@@ -59,32 +93,45 @@ function App() {
       });
       setPeoples(newSorted);
 
+      const idx = parseInt(to.grid.split(",")[1]) - 1;
+      const lineupToUpdate = lineups.get(idx);
       const newLineup = new Lineup();
-      newLineup.grid = lineup.grid.map(r => [...r]);
-      newLineup.leftWeight = lineup.leftWeight;
-      newLineup.rightWeight = lineup.rightWeight;
+      newLineup.grid = lineupToUpdate.grid.map(r => [...r]);
+      newLineup.leftWeight = lineupToUpdate.leftWeight;
+      newLineup.rightWeight = lineupToUpdate.rightWeight;
+
       newLineup.removePerson(to.row, to.col);
       newLineup.addPerson(to.row, to.col, person);
-      setLineup(newLineup);
-    }
 
-    if (from.grid == "main" && to.grid == "sorted") {
-      const person = lineup.grid[from.row][from.col];
+      const updatedMap = new Map(lineups);
+      updatedMap.set(idx, newLineup);
+      setLineups(updatedMap);
+      return;
+    }
+      // Heat to Sorted
+    if (from.grid.includes("heat") && to.grid === "sorted") {
+      const idx = parseInt(from.grid.split(",")[1]) - 1;
+      const lineupFrom = lineups.get(idx);
+      const person = lineupFrom.grid[from.row][from.col];
       if (!person) return;
 
+      // Remove from lineup
       const newLineup = new Lineup();
-      newLineup.grid = lineup.grid.map(r => [...r]);
-      newLineup.leftWeight = lineup.leftWeight;
-      newLineup.rightWeight = lineup.rightWeight;
+      newLineup.grid = lineupFrom.grid.map(r => [...r]);
+      newLineup.leftWeight = lineupFrom.leftWeight;
+      newLineup.rightWeight = lineupFrom.rightWeight;
       newLineup.removePerson(from.row, from.col);
-      setLineup(newLineup);
 
+      const updatedMap = new Map(lineups);
+      updatedMap.set(idx, newLineup);
+      setLineups(updatedMap);
+
+      // Add to sorted
       const newSorted = new SortedArray(compareByWeight);
-      peoples.getAll().forEach(p => {
-        if (p !== person) newSorted.add(p);
-      });
+      peoples.getAll().forEach(p => newSorted.add(p));
       newSorted.add(person);
       setPeoples(newSorted);
+      return;
     }
   };
 
@@ -98,11 +145,11 @@ function App() {
     },
 
     onDragEnter: e => {
-      e.preventDefault(); // 🔴 REQUIRED
+      e.preventDefault();
     },
 
     onDragOver: e => {
-      e.preventDefault(); // 🔴 REQUIRED
+      e.preventDefault();
       e.dataTransfer.dropEffect = "move";
     },
 
@@ -134,26 +181,21 @@ function App() {
       <h1>Dragon Boat Lineup</h1>
 
       <div className="lineup-container">
-
-        <div className = "lineup-container">
-          {Array.from(lineups).map(([idx, lineup]) => (
-            <div className="item" key = {idx}>
-              <LineupGrid
-              title={"heat " + (idx + 1)}
+        {Array.from(lineups).map(([idx, lineup]) => (
+          <div className="item" key={idx}>
+            <LineupGrid
+              title={"heat," + (idx + 1)}
               grid={lineup.grid}
-              gridType="main"
+              gridType={"heat," + (idx + 1)}
               dragHandler={dragHandler}
-              />
+            />
+            <p>
+              Left Side Weight: {lineup.leftWeight} | Right Side Weight: {lineup.rightWeight}
+            </p>
+          </div>
+        ))}
 
-              <p>
-                Left Side Weight: {lineup.leftWeight} | Right Side Weight:{" "}
-                {lineup.rightWeight}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div className="scroll-container">
+        <div className="item people-item">
           <LineupGrid
             title="People"
             grid={getPeopleGrid(peoples)}
@@ -162,6 +204,7 @@ function App() {
           />
         </div>
       </div>
+
 
       <div className="lineup-container">
         
