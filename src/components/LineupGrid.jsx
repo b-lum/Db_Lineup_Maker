@@ -3,18 +3,17 @@ import PersonCell from "./PersonCell.jsx";
 export default function LineupGrid({
   title,
   grid,
-  gridType,
+  gridMeta,
   dragHandler
 }) {
   return (
     <div className="lineup-grid">
       <p>{title}</p>
-      {grid.map((row, i) => (
 
-        
+      {grid.map((row, i) => (
         <div className="lineup-row" key={i}>
 
-          {gridType === "main" && (
+          {gridMeta.type === "heat" && (
             i === 0 ? (
                <div className = "lineup-label">Caller</div>
             ) : (
@@ -26,14 +25,14 @@ export default function LineupGrid({
             <PersonCell
               key={j}
               person={p}
-              dragProps={dragHandler(gridType, i, j)}
+              dragProps={dragHandler(gridMeta, i, j)}
             />
           ))}
 
-          {gridType === "main" && (
+          {gridMeta.type === "heat" && (
             i === 0 ? (
               <div className = "lineup-label">Steer</div>
-            ) : (
+            ) : ( 
               <div className = "lineup-label">R {i}</div>
             )
           )}

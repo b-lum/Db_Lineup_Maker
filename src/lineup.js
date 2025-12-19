@@ -25,6 +25,11 @@ class Lineup {
    }
 
    addPerson(row, col, person) {
+
+      if (person === null) {
+         this.grid[row][col] = null;
+         return;
+      }
       if (row < 0 || row >= this.grid.length || col < 0 || col >= this.grid[0].length) {
          throw new Error("Invalid row or column");
       }
