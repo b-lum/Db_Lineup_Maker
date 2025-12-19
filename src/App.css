@@ -58,6 +58,14 @@
   flex-wrap: wrap; 
 }
 
+.scroll-container {
+  max-height: 800px; /* or whatever height you want */
+  overflow-y: auto;   /* vertical scroll */
+  overflow-x: hidden; /* optional: hide horizontal scroll */
+  /*border: 1px solid #ccc; /* optional: visual border */
+  padding: 10px; /* optional spacing */
+}
+
 p {
   margin-top: 20px;
   font-weight: bold;

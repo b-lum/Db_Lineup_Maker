@@ -1,155 +1,167 @@
-import { useState } from 'react'
-import './App.css'
-import { Person, Lineup, SortedArray } from "./lineup.js"
+import { useState } from "react";
+import "./App.css";
+import { Person, Lineup, SortedArray } from "./lineup.js";
 import Papa from "papaparse";
-
+import LineupGrid from "./components/LineupGrid.jsx";
 
 function App() {
-  const [lineup, setLineup] = useState(() => {
-    const l = new Lineup();
-    return l;
-  });
+  const compareByWeight = (a, b) => a.weight - b.weight;
 
-  const compareByWeight = ( person1, person2 ) => {
-    return person1.weight - person2.weight;
-  }
+  const [lineup, setLineup] = useState(() => new Lineup());
+  const [peoples, setPeoples] = useState(
+    () => new SortedArray(compareByWeight)
+  );
 
-  const [peoples, setPeoples] = useState(new SortedArray(compareByWeight));
-    
-  const populatePeople = (event) => {
+  const populatePeople = event => {
     const file = event.target.files[0];
     Papa.parse(file, {
       header: true,
-      complete : (results) => {
-        const newPeoples = new SortedArray(compareByWeight);
-        peoples.getAll().forEach(p => newPeoples.add(p));
+      complete: results => {
+        const next = new SortedArray(compareByWeight);
+        peoples.getAll().forEach(p => next.add(p));
         results.data.forEach(row => {
-          const person = new Person(row.name, parseFloat(row.weight))
-          newPeoples.add(person)
+          if (!row.name) return;
+          next.add(new Person(row.name, parseFloat(row.weight)));
         });
-        setPeoples(newPeoples)
+        setPeoples(next);
       }
     });
-  }
+  };
 
-  const dragHandler = (gridType, row, col) => {
-    return {
-      onDragStart: e => {
-        e.dataTransfer.setData(
-          "text/plain",
-          JSON.stringify({ gridType, row, col })
-        )
-      },
-      onDragOver: e => e.preventDefault(),
-      onDrop: e => {
-        e.preventDefault();
-        const source = JSON.parse(e.dataTransfer.getData("text/plain"));
-
-        if (source.gridType === "main" && gridType === "main") {
-          // Main → Main: swap
-          const newLineup = new Lineup();
-          newLineup.grid = lineup.grid.map(r => [...r]);
-          newLineup.leftWeight = lineup.leftWeight;
-          newLineup.rightWeight = lineup.rightWeight;
-          newLineup.swapPerson(source.row, source.col, row, col);
-          setLineup(newLineup);
-        } else if (source.gridType === "sorted" && gridType === "main") {
-          // Sorted → Main: move
-          const peopleArray = peoples.getAll();
-          const person = peopleArray[source.row * 2 + source.col];
-          if (!person) return;
-
-          // remove from sorted
-          const newSorted = new SortedArray(compareByWeight);
-          peopleArray.forEach(p => {
-            if (p !== person) newSorted.add(p);
-          });
-          setPeoples(newSorted);
-
-          // add to main lineup
-          const newLineup = new Lineup();
-          newLineup.grid = lineup.grid.map(r => [...r]);
-          newLineup.leftWeight = lineup.leftWeight;
-          newLineup.rightWeight = lineup.rightWeight;
-          newLineup.addPerson(row, col, person);
-          setLineup(newLineup);
-        }
-      }
+  const movePerson = ({ from, to }) => {
+    if (from.grid === "main" && to.grid === "main") {
+      const newLineup = new Lineup();
+      newLineup.grid = lineup.grid.map(r => [...r]);
+      newLineup.leftWeight = lineup.leftWeight;
+      newLineup.rightWeight = lineup.rightWeight;
+      newLineup.swapPerson(from.row, from.col, to.row, to.col);
+      setLineup(newLineup);
     }
-  }
 
+    if (from.grid === "sorted" && to.grid === "main") {
+      const peopleArray = peoples.getAll();
+      const index = from.row * 2 + from.col;
+      const person = peopleArray[index];
+      if (!person) return;
 
-  const getPeopleGrid = (sortedArray) => {
-    const people = sortedArray.getAll();
-    const mid = Math.ceil((people.length / 2) + 1);
-    const topRow = people.slice(0, mid);
-    const bottomRow = people.slice(mid);
+      const newSorted = new SortedArray(compareByWeight);
+      peopleArray.forEach(p => {
+        if (p !== person) newSorted.add(p);
+      });
+      setPeoples(newSorted);
 
-    // pad rows with null if needed
-    if (topRow.length < bottomRow.length) topRow.push(null);
-    if (bottomRow.length < topRow.length) bottomRow.push(null);
+      const newLineup = new Lineup();
+      newLineup.grid = lineup.grid.map(r => [...r]);
+      newLineup.leftWeight = lineup.leftWeight;
+      newLineup.rightWeight = lineup.rightWeight;
+      newLineup.removePerson(to.row, to.col);
+      newLineup.addPerson(to.row, to.col, person);
+      setLineup(newLineup);
+    }
 
-    return [topRow, bottomRow];
-  }
+    if (from.grid == "main" && to.grid == "sorted") {
+      const person = lineup.grid[from.row][from.col];
+      if (!person) return;
+
+      const newLineup = new Lineup();
+      newLineup.grid = lineup.grid.map(r => [...r]);
+      newLineup.leftWeight = lineup.leftWeight;
+      newLineup.rightWeight = lineup.rightWeight;
+      newLineup.removePerson(from.row, from.col);
+      setLineup(newLineup);
+
+      const newSorted = new SortedArray(compareByWeight);
+      peoples.getAll().forEach(p => {
+        if (p !== person) newSorted.add(p);
+      });
+      newSorted.add(person);
+      setPeoples(newSorted);
+    }
+  };
+
+  const dragHandler = (gridType, row, col) => ({
+    onDragStart: e => {
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData(
+        "application/json",
+        JSON.stringify({ grid: gridType, row, col })
+      );
+    },
+
+    onDragEnter: e => {
+      e.preventDefault(); // 🔴 REQUIRED
+    },
+
+    onDragOver: e => {
+      e.preventDefault(); // 🔴 REQUIRED
+      e.dataTransfer.dropEffect = "move";
+    },
+
+    onDrop: e => {
+      e.preventDefault();
+
+      const from = JSON.parse(
+        e.dataTransfer.getData("application/json")
+      );
+
+      movePerson({
+        from,
+        to: { grid: gridType, row, col }
+      });
+    }
+  });
+
+  const getPeopleGrid = sorted => {
+    const people = sorted.getAll();
+    const cols = 2;
+    const rows = Math.ceil(people.length / cols);
+    return Array.from({ length: rows }, (_, r) =>
+      Array.from({ length: cols }, (_, c) => people[r * cols + c] ?? null)
+    );
+  };
 
   return (
     <div className="app-container">
       <h1>Dragon Boat Lineup</h1>
 
       <div className="lineup-container">
-        <div className="lineup-grid">
-          {lineup.grid.map((row, i) => (
-            <div className="lineup-row" key={i}>
-              {row.map((p, j) => (
-                <div className="lineup-cell" key={j} draggable={!!p} {...dragHandler("main", i, j)}>
-                  {p ? (
-                    <>
-                      <span className="person-name">{p.name}</span> <br />
-                      {p.weight} lbs
-                    </>
-                  ) : (
-                    "empty"
-                  )}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
+        <LineupGrid
+          title="Boat Lineup"
+          grid={lineup.grid}
+          gridType="main"
+          dragHandler={dragHandler}
+        />
 
-        <div className="lineup-grid">
-          {getPeopleGrid(peoples).map((row, i) => (
-            <div className="lineup-row" key={i}>
-              {row.map((p, j) => (
-                <div className="lineup-cell" key={j} draggable={!!p} {...dragHandler("sorted", i, j)}>
-                  {p ? (
-                    <>
-                      <span className="person-name">{p.name}</span> <br />
-                      {p.weight} lbs
-                    </>
-                  ) : (
-                    "empty"
-                  )}
-                </div>
-              ))}
-            </div>
-          ))}
+        <div className="scroll-container">
+          <LineupGrid
+            title="People"
+            grid={getPeopleGrid(peoples)}
+            gridType="sorted"
+            dragHandler={dragHandler}
+          />
         </div>
       </div>
 
+      <div className="lineup-container">
+        <div>
+          <p>
+          Left Side Weight: {lineup.leftWeight} | Right Side Weight:{" "}
+          {lineup.rightWeight}
+          </p>
+        </div>
+        <div>
+          <label>
+            Upload CSV
+            <input
+              type="file"
+              accept=".csv"
+              onChange={populatePeople}
+              style={{ display: "none" }}
+            />
+          </label>
+        </div>
 
-      <p>
-        Left Side Weight: {lineup.leftWeight} | Right Side Weight: {lineup.rightWeight}
-      </p>
-
-      <label>
-        Upload CSV
-        <input 
-          type="file" 
-          accept=".csv" 
-          onChange={populatePeople} 
-          style={{ display: 'none' }} 
-        />
-      </label>
+      </div>
     </div>
   );
 }
