@@ -10,7 +10,9 @@ function App() {
 
    const [roster, setRoster] = useState(
       () => new SortedArray(compareByWeight)
-   );
+   )
+
+   const [boatTypes, setBoatTypes] = useState (() => new Map())
 
    const populateRoster = event => {
       const file = event.target.files[0];
@@ -34,13 +36,8 @@ function App() {
 
       <h1> Dragon Boat Lineup</h1>
 
-      <BoatHeats
-         boatType="standard"
-         numHeats={3}
-         roster={roster}
-      />
       <label className="upload-label">
-         Upload CSV
+         Upload Roster (CSV)
          <input
             type="file"
             accept=".csv"
@@ -48,6 +45,12 @@ function App() {
             style={{ display: "none" }}
          />
       </label>
+
+      <BoatHeats
+         boatType="standard"
+         numHeats={3}
+         roster={roster}
+      />
    </div>
   )
 }

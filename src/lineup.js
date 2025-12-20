@@ -27,7 +27,7 @@ class Lineup {
 
    addPerson(row, col, person) {
       // Check for null or duplicate by name
-      if (person === null || this.peopleSet.has(person.name)) {
+      if (person === null || this.peopleSet.has(person)) {
          console.log(`Cannot add ${person?.name || "null"}: already in lineup or invalid`);
          return; // just exit without modifying the grid
       }
@@ -39,7 +39,7 @@ class Lineup {
 
       // Add person to grid
       this.grid[row][col] = person;
-      this.peopleSet.add(person.name);
+      this.peopleSet.add(person);
 
       // Update weights if not in first row
       if (row !== 0) {
@@ -58,7 +58,7 @@ class Lineup {
          else if (col === 1 && row !== 0) this.rightWeight -= p.weight;
 
          this.grid[row][col] = null
-         this.peopleSet.delete(p.name);
+         this.peopleSet.delete(p);
       
          console.log(`Removed ${p.name} from row ${row}, column ${col}`);
       } else {
@@ -107,36 +107,19 @@ class Lineup {
 }
 
 class SortedArray {
-  constructor(compareFn) {
-    this.data = [];            // internal array
-    this.compareFn = compareFn; // comparison function for sorting
-  }
+   constructor(compareFn) {
+      this.data = [];            
+      this.compareFn = compareFn; 
+   }
 
-  add(item) {
-    this.data.push(item);       // add new item
-    this.data.sort(this.compareFn); // sort array immediately
-  }
+   add(item) {
+      this.data.push(item);       
+      this.data.sort(this.compareFn); 
+   }
 
-  getAll() {
-    return this.data;           // read-only access to the sorted array
-  }
+   getAll() {
+      return this.data;    
+   }
 }
-
-
 export { Person, Lineup, SortedArray };
-
-const lineup = new Lineup();
-const p1 = new Person("Alice", 150, 12);
-const p2 = new Person("Bob", 180, 15);
-
-lineup.addPerson(5, 0, p1);  // left column
-lineup.showGrid();
-
-// Swap Alice with empty right column
-lineup.swapPerson(5, 0, 5, 1);  
-lineup.showGrid();
-
-// Swap empty slot back
-lineup.swapPerson(5, 1, 5, 0);  
-lineup.showGrid();
 

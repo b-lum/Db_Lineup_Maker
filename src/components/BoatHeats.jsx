@@ -32,7 +32,7 @@ export default function BoatHeats({
       newLineup.grid = lineup.grid.map(r => [...r]);
       newLineup.leftWeight = lineup.leftWeight;
       newLineup.rightWeight = lineup.rightWeight;
-      newLineup.peopleSet = new Set(lineup.peopleSet); // <-- copy peopleSet
+      newLineup.peopleSet = new Set(lineup.peopleSet);
 
       newLineup.swapPerson(from.row, from.col, to.row, to.col);
 
@@ -57,13 +57,13 @@ export default function BoatHeats({
       newFrom.grid = fromLineup.grid.map(r => [...r]);
       newFrom.leftWeight = fromLineup.leftWeight;
       newFrom.rightWeight = fromLineup.rightWeight;
-      newFrom.peopleSet = new Set(fromLineup.peopleSet); // <-- copy peopleSet
+      newFrom.peopleSet = new Set(fromLineup.peopleSet);
 
       const newTo = new Lineup();
       newTo.grid = toLineup.grid.map(r => [...r]);
       newTo.leftWeight = toLineup.leftWeight;
       newTo.rightWeight = toLineup.rightWeight;
-      newTo.peopleSet = new Set(toLineup.peopleSet); // <-- copy peopleSet
+      newTo.peopleSet = new Set(toLineup.peopleSet);
 
       // CASE 1: swap
       if (fromPerson && toPerson) {
@@ -103,7 +103,7 @@ export default function BoatHeats({
       newLineup.grid = lineup.grid.map(r => [...r]);
       newLineup.leftWeight = lineup.leftWeight;
       newLineup.rightWeight = lineup.rightWeight;
-      newLineup.peopleSet = new Set(lineup.peopleSet); // <-- copy peopleSet
+      newLineup.peopleSet = new Set(lineup.peopleSet);
 
       newLineup.removePerson(to.row, to.col);
       newLineup.addPerson(to.row, to.col, person);
@@ -124,7 +124,7 @@ export default function BoatHeats({
       newLineup.grid = lineup.grid.map(r => [...r]);
       newLineup.leftWeight = lineup.leftWeight;
       newLineup.rightWeight = lineup.rightWeight;
-      newLineup.peopleSet = new Set(lineup.peopleSet); // <-- copy peopleSet
+      newLineup.peopleSet = new Set(lineup.peopleSet);
       newLineup.removePerson(from.row, from.col);
 
       const updatedMap = new Map(lineups);
