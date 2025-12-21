@@ -1,19 +1,4 @@
-class Person {
-   constructor(name, weight, oc_400_times = [0, 0], gender = null, isSteer = false, isCaller = false) {
-      this.name = name;
-      this.weight = weight;
-      this.oc_400_times = oc_400_times;
-      this.gender = null
-      this.isSteer = isSteer
-      this.isCaller = isCaller
-   }
-
-   showPerson() {
-      console.log(`name : ${this.name}`);
-      console.log(`weight : ${this.weight}`);
-   }
-
-};
+import { Person } from "./Person.js"; 
 
 class Lineup {
    constructor() {
@@ -104,22 +89,16 @@ class Lineup {
       }
       console.log(`Total Left Weight: ${this.leftWeight}, Total Right Weight: ${this.rightWeight}\n`);
    }
+
+   clone() {
+      const l = new Lineup();
+      l.grid = this.grid.map(r => [...r]);
+      l.leftWeight = this.leftWeight;
+      l.rightWeight = this.rightWeight;
+      l.peopleSet = new Set(this.peopleSet);
+      return l;
+}
 }
 
-class SortedArray {
-   constructor(compareFn) {
-      this.data = [];            
-      this.compareFn = compareFn; 
-   }
-
-   add(item) {
-      this.data.push(item);       
-      this.data.sort(this.compareFn); 
-   }
-
-   getAll() {
-      return this.data;    
-   }
-}
-export { Person, Lineup, SortedArray };
+export { Lineup };
 

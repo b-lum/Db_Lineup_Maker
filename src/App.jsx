@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Person, SortedArray } from "./lineup.js"
+import { Person } from "./data_objects/Person.js"
+import { SortedArray } from "./data_objects/SortedArray.js"
+import { Heats } from "./data_objects/Heats.js";
 import Papa from "papaparse";
-import BoatHeats from "./components/BoatHeats.jsx";
+import BoatHeats from "./react_components/BoatHeats.jsx";
 import "./App.css";
 
 function App() {
@@ -11,8 +13,11 @@ function App() {
    const [roster, setRoster] = useState(
       () => new SortedArray(compareByWeight)
    )
+   const [boats, setBoats] = useState (() => new Map())
 
-   const [boatTypes, setBoatTypes] = useState (() => new Map())
+   const [boatInputs, setBoatInputs] = useState([""]);
+   const [activeBoat, setActiveBoat] = useState(null);
+
 
    const populateRoster = event => {
       const file = event.target.files[0];
@@ -30,29 +35,93 @@ function App() {
       });
    };
 
-  return (
+   const updateBoatInput = (i, value) => {
+      const nextInputs = [...boatInputs];
+      nextInputs[i] = value;
 
-   <div className="app-container">
+      // Always keep one empty input at the end
+      if (i === boatInputs.length - 1 && value.trim() !== "") {
+         nextInputs.push("");
+      }
 
-      <h1> Dragon Boat Lineup</h1>
+      setBoatInputs(nextInputs);
 
-      <label className="upload-label">
-         Upload Roster (CSV)
-         <input
-            type="file"
-            accept=".csv"
-            onChange={populateRoster}
-            style={{ display: "none" }}
-         />
-      </label>
+      // Rebuild boats Map
+      const nextBoats = new Map();
+      nextInputs
+         .map(v => v.trim())
+         .filter(v => v !== "")
+         .forEach(name => {
+            nextBoats.set(name, new Heats(name, 2) );
+         });
 
-      <BoatHeats
-         boatType="standard"
-         numHeats={3}
-         roster={roster}
-      />
-   </div>
-  )
+      setBoats(nextBoats);
+   };
+
+   const handleBoatClick = (boatName) => {
+      setActiveBoat(boatName);
+   };
+
+   return (
+
+      <div className="app-container">
+
+         <h1> Dragon Boat Lineup Maker</h1>
+
+         <div className="boat-list">
+            {boatInputs.map((value, i) => (
+               <input
+                  key={i}
+                  value={value}
+                  placeholder={i === boatInputs.length - 1 ? "Add boat…" : ""}
+                  onChange={e => updateBoatInput(i, e.target.value)}
+               />
+            ))}
+         </div>
+
+         <label className="upload-label">
+            Upload Roster (CSV)
+            <input
+               type="file"
+               accept=".csv"
+               onChange={populateRoster}
+               style={{ display: "none" }}
+            />
+         </label>
+
+         <div>
+            {Array.from(boats.entries()).map(([name, heats]) => (
+               <button key={name} onClick={() => handleBoatClick(name)}>
+                  {name}
+               </button>
+            ))}
+         </div>
+
+         <div>
+            {activeBoat && boats.has(activeBoat) && (
+               <BoatHeats
+                  heats={boats.get(activeBoat)}
+                  roster={roster}
+                  onUpdate={(newHeats) => {
+                     const next = new Map(boats);
+                     next.set(activeBoat, newHeats);
+                     setBoats(next);
+                  }}
+               />
+            )}
+         </div>
+         
+      </div>
+   )
 }
 
 export default App;
+
+
+/*
+<BoatHeats
+            boatType="standard"
+            numHeats={3}
+            roster={roster}
+         />
+*/
