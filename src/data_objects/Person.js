@@ -1,11 +1,11 @@
 class Person {
-   constructor(name, weight, oc_400_times = [0, 0], gender = null, isSteer = false, isCaller = false) {
+   constructor(name, weight, oc_400_times = [0, 0], gender, isSteer = false, isCaller = false) {
       this.name = name;
       this.weight = weight;
+      this.gender = gender;
       this.oc_400_times = oc_400_times;
-      this.gender = null
-      this.isSteer = isSteer
-      this.isCaller = isCaller
+      this.isSteer = isSteer;
+      this.isCaller = isCaller;
    }
 
    showPerson() {

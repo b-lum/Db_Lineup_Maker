@@ -14,7 +14,7 @@ class Lineup {
       // Check for null or duplicate by name
       if (person === null || this.peopleSet.has(person)) {
          console.log(`Cannot add ${person?.name || "null"}: already in lineup or invalid`);
-         return; // just exit without modifying the grid
+         return False; 
       }
 
       // Bounds check
@@ -33,6 +33,7 @@ class Lineup {
       }
 
       console.log(`Added ${person.name} to row ${row}, column ${col}`);
+      return true;
    }
 
    removePerson(row, col) {
@@ -97,7 +98,27 @@ class Lineup {
       l.rightWeight = this.rightWeight;
       l.peopleSet = new Set(this.peopleSet);
       return l;
-}
+   }
+
+   mastersheetStr() {
+
+      const rows = [];
+      const firstRow = this.grid[0][0]?.name ?? "";
+      rows.push(`Caller\t${firstRow}\t`);
+
+      rows.push(`Row\tLeft\tRight`);
+
+
+      for (let i = 0; i < this.grid.length; i++) {
+        const left = this.grid[i][0]?.name ?? "";
+        const right = this.grid[i][1]?.name ?? "";
+        rows.push(`${i}\t${left}\t${right}`);
+      }
+
+      const lastRow = this.grid[0][1]?.name ?? "";
+      rows.push(`Steer\t\t${lastRow}`)
+      return rows;
+   }
 }
 
 export { Lineup };

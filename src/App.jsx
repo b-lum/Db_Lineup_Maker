@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Person } from "./data_objects/Person.js"
 import { SortedArray } from "./data_objects/SortedArray.js"
 import { Heats } from "./data_objects/Heats.js";
-import Papa from "papaparse";
 import BoatHeats from "./react_components/BoatHeats.jsx";
+import CopyButton from "./react_components/CopyButton.jsx";
+
+import Papa from "papaparse";
 import "./App.css";
 
 function App() {
@@ -17,10 +19,15 @@ function App() {
 
    const [boatInputs, setBoatInputs] = useState([""]);
    const [activeBoat, setActiveBoat] = useState(null);
+   const [rosterFileName, setRosterFileName] = useState("No file chosen");
 
 
    const populateRoster = event => {
       const file = event.target.files[0];
+      if (!file) return;
+
+      setRosterFileName(file.name);
+
       Papa.parse(file, {
          header: true,
          complete: results => {
@@ -28,39 +35,57 @@ function App() {
             roster.getAll().forEach(p => next.add(p));
             results.data.forEach(row => {
                if (!row.name) return;
-               next.add(new Person(row.name, parseFloat(row.weight)));
-            });
+               next.add(new Person(
+                  row.name, 
+                  parseFloat(row.weight), 
+                  row.gender
+               ));
+            })
             setRoster(next);
          }
-      });
-   };
+      })
+
+      event.target.value = "";
+   }
 
    const updateBoatInput = (i, value) => {
       const nextInputs = [...boatInputs];
       nextInputs[i] = value;
 
-      // Always keep one empty input at the end
       if (i === boatInputs.length - 1 && value.trim() !== "") {
          nextInputs.push("");
       }
 
       setBoatInputs(nextInputs);
 
-      // Rebuild boats Map
-      const nextBoats = new Map();
-      nextInputs
-         .map(v => v.trim())
-         .filter(v => v !== "")
-         .forEach(name => {
-            nextBoats.set(name, new Heats(name, 2) );
-         });
+      setBoats(prevBoats => {
+         const nextBoats = new Map(prevBoats);
 
-      setBoats(nextBoats);
-   };
+         const names = nextInputs
+            .map(v => v.trim())
+            .filter(v => v !== "");
+
+         // add new boats
+         for (const name of names) {
+            if (!nextBoats.has(name)) {
+               nextBoats.set(name, new Heats(name, 2));
+            }
+         }
+
+         // remove deleted boats
+         for (const name of nextBoats.keys()) {
+            if (!names.includes(name)) {
+            nextBoats.delete(name);
+            }
+         }
+
+         return nextBoats;
+      })
+   }
 
    const handleBoatClick = (boatName) => {
       setActiveBoat(boatName);
-   };
+   }
 
    return (
 
@@ -79,15 +104,23 @@ function App() {
             ))}
          </div>
 
-         <label className="upload-label">
-            Upload Roster (CSV)
+         <div className="upload-container">
+            <label htmlFor="roster-upload" className="upload-label">
+               Choose File
+            </label>
+
+            <span className="file-status">
+               {rosterFileName}
+            </span>
+
             <input
                type="file"
                accept=".csv"
+               id="roster-upload"
                onChange={populateRoster}
                style={{ display: "none" }}
             />
-         </label>
+         </div>
 
          <div>
             {Array.from(boats.entries()).map(([name, heats]) => (
@@ -110,6 +143,10 @@ function App() {
                />
             )}
          </div>
+
+         {activeBoat && boats.has(activeBoat) && (
+            <CopyButton text={boats.get(activeBoat).mastersheetStr()} />
+         )}
          
       </div>
    )

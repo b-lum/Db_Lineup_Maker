@@ -1,7 +1,4 @@
-import { useState } from "react";
 import "../App.css";
-import { Lineup } from "../data_objects/Lineup.js";
-import { Heats } from "../data_objects/Heats.js";
 import LineupGrid from "./LineupGrid.jsx";
 
 export default function BoatHeats({
@@ -9,7 +6,6 @@ export default function BoatHeats({
   roster,
   onUpdate
 }) {
-
 
   const movePerson = ({ from, to }) => {
     const next = heats.clone();
@@ -85,15 +81,19 @@ export default function BoatHeats({
           </div>
         ))}
 
-        <div className="item people-item">
-          <LineupGrid
-            title="People"
-            grid={getPeopleGrid(roster)}
-            gridMeta={{ type: "sorted" }}
-            dragHandler={dragHandler}
-          />
+        <div className="scroll-container">
+
+          <div className="item people-item">
+            <LineupGrid
+              title="Roster"
+              grid={getPeopleGrid(roster)}
+              gridMeta={{ type: "sorted" }}
+              dragHandler={dragHandler}
+            />
+          </div>
         </div>
       </div>
+
     </div>
-  );
+  )
 }

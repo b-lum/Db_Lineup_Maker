@@ -7,6 +7,7 @@ class Heats {
       for (let i = 0; i < numHeats; i++) {
          this.lineups.set(i, new Lineup());
        }
+       this.boatType = boatType;
    }
 
    addLineup(i, lineup) {
@@ -93,6 +94,25 @@ class Heats {
       }
 
       return copy;
+   }
+
+   mastersheetStr() {
+
+      const lineupsArr = Array.from(this.lineups.values());
+      if (lineupsArr.length === 0) return "";
+
+      const line1 = `${this.boatType}\n`;
+      const numRows = lineupsArr[0].mastersheetStr().length;
+      const rows = new Array(numRows).fill("").map(() => "");
+
+      for (let i = 0; i < lineupsArr.length; i++) {
+        const lineupRows = lineupsArr[i].mastersheetStr();
+        for (let j = 0; j < lineupRows.length; j++) {
+            rows[j] += lineupRows[j] + "\t\t";
+         }
+      }
+
+      return line1 + rows.join("\n");
    }
 }
 
