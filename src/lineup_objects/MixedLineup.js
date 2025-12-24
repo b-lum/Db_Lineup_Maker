@@ -19,19 +19,23 @@ class MixedLineup extends Lineup {
             console.log(`Failed to add ${person.name}, ${this.guyCount} men already on boat`);
             return false;
          } else {
-            super.addPerson(row, col, person);
+            const wasAdded = super.addPerson(row, col, person);
+            if (!wasAdded) return false;
+            
             this.guyCount += 1;
-            console.log(`Successfully added ${person.name}`);
+            //console.log(`Successfully added ${person.name}`);
             return true;
          }
       } else if (gender === "female") {
          if (this.girlCount >= 10) {
             console.log(`Failed to add ${person.name}, ${this.girlCount} women already on boat`);
             return false;
-         }else {
-            super.addPerson(row, col, person);
+         } else {
+            const wasAdded = super.addPerson(row, col, person);
+            if (!wasAdded) return false;
+
             this.girlCount += 1;
-            console.log(`Successfully added ${person.name}`);
+            //console.log(`Successfully added ${person.name}`);
             return true;
          }
 
@@ -66,7 +70,6 @@ class MixedLineup extends Lineup {
       l.guyCount = this.guyCount;
       return l;
    }
-
 
 }
 

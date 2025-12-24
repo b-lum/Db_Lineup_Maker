@@ -67,10 +67,12 @@ class Lineup {
       if (row1 !== 0 && col1 === 1 && p1) this.rightWeight -= p1.weight;
       if (row2 !== 0 && col2 === 0 && p2) this.leftWeight -= p2.weight;
       if (row2 !== 0 && col2 === 1 && p2) this.rightWeight -= p2.weight;
-
+      
       // Swap in grid
-      this.grid[row1][col1] = p2;
-      this.grid[row2][col2] = p1;
+      if (p1) this.removePerson(row1, col1);
+      if (p2) this.removePerson(row2, col2);
+      if (p1) this.addPerson(row2, col2, p1);
+      if (p2) this.addPerson(row1, col1, p2);
 
       // Update weights: add new weights if row != 0
       if (row1 !== 0 && col1 === 0 && p2) this.leftWeight += p2.weight;
