@@ -69,6 +69,11 @@
   box-sizing: border-box;
 }
 
+.boat-list {
+  display: flex;
+  flex-direction: column;
+}
+
 .scroll-container {
   max-height: 800px; /* or whatever height you want */
   overflow-y: auto;   /* vertical scroll */

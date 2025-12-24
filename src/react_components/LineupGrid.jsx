@@ -4,7 +4,7 @@ export default function LineupGrid({
   title,
   grid,
   gridMeta,
-  dragHandler
+  dragHandler,
 }) {
   return (
     <div className="lineup-grid">

@@ -1,5 +1,5 @@
 class Person {
-   constructor(name, weight, oc_400_times = [0, 0], gender, isSteer = false, isCaller = false) {
+   constructor(name, weight, gender, oc_400_times = [0, 0], isSteer = false, isCaller = false) {
       this.name = name;
       this.weight = weight;
       this.gender = gender;
@@ -11,6 +11,7 @@ class Person {
    showPerson() {
       console.log(`name : ${this.name}`);
       console.log(`weight : ${this.weight}`);
+      console.log(`gender : ${this.gender}`);
    }
 
 }

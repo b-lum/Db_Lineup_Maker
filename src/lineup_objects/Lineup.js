@@ -1,4 +1,4 @@
-import { Person } from "./Person.js"; 
+import { Person } from "../data_objects/Person.js"; 
 
 class Lineup {
    constructor() {
@@ -14,7 +14,7 @@ class Lineup {
       // Check for null or duplicate by name
       if (person === null || this.peopleSet.has(person)) {
          console.log(`Cannot add ${person?.name || "null"}: already in lineup or invalid`);
-         return False; 
+         return false; 
       }
 
       // Bounds check

@@ -8,13 +8,15 @@ class MixedLineup extends Lineup {
    }
 
    addPerson(row, col, person) {
-      if (row === 0) super.addPerson(row, col, person);
+      if (row === 0) {
+         return super.addPerson(row, col, person);
+      }
 
-      gender = person.gender;
+      const gender = person.gender;
 
       if (gender === "male") {
-         if (this.guyCount === 10) {
-            console.log(`Failed to add ${person.name}, boat is full with men`);
+         if (this.guyCount >= 10) {
+            console.log(`Failed to add ${person.name}, ${this.guyCount} men already on boat`);
             return false;
          } else {
             super.addPerson(row, col, person);
@@ -23,8 +25,8 @@ class MixedLineup extends Lineup {
             return true;
          }
       } else if (gender === "female") {
-         if (this.girlCount === 10) {
-            console.log(`Failed to add ${person.name}, boat is full with women`);
+         if (this.girlCount >= 10) {
+            console.log(`Failed to add ${person.name}, ${this.girlCount} women already on boat`);
             return false;
          }else {
             super.addPerson(row, col, person);
@@ -38,16 +40,34 @@ class MixedLineup extends Lineup {
    }
 
    removePerson(row, col) {
-      person = this.grid[row][col];
+
+      if (row === 0) {
+         return super.removePerson(row, col);
+      }
+
+      const person = this.grid[row][col];
 
       if (person !== null && person.gender === "male") {
          this.guyCount -= 1;
       } if (person !== null && person.gender === "female") {
-         this.girlCount += 1;
+         this.girlCount -= 1;
       }
       
-      super.removePerson(row, col);
+      return super.removePerson(row, col);
+   }
+
+   clone() {
+      const l = new MixedLineup();
+      l.grid = this.grid.map(r => [...r]);
+      l.leftWeight = this.leftWeight;
+      l.rightWeight = this.rightWeight;
+      l.peopleSet = new Set(this.peopleSet);
+      l.girlCount = this.girlCount;
+      l.guyCount = this.guyCount;
+      return l;
    }
 
 
 }
+
+export { MixedLineup };

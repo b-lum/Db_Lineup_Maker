@@ -17,7 +17,9 @@ function App() {
    )
    const [boats, setBoats] = useState (() => new Map())
 
-   const [boatInputs, setBoatInputs] = useState([""]);
+   const [boatInputs, setBoatInputs] = useState([
+      { name: "", type: "" }
+   ]);   
    const [activeBoat, setActiveBoat] = useState(null);
    const [rosterFileName, setRosterFileName] = useState("No file chosen");
 
@@ -48,40 +50,35 @@ function App() {
       event.target.value = "";
    }
 
-   const updateBoatInput = (i, value) => {
-      const nextInputs = [...boatInputs];
-      nextInputs[i] = value;
+   const updateBoatInput = (i, changes) => {
+      setBoatInputs(prev => {
+         const next = [...prev];
+         next[i] = { ...next[i], ...changes };
 
-      if (i === boatInputs.length - 1 && value.trim() !== "") {
-         nextInputs.push("");
-      }
-
-      setBoatInputs(nextInputs);
-
-      setBoats(prevBoats => {
-         const nextBoats = new Map(prevBoats);
-
-         const names = nextInputs
-            .map(v => v.trim())
-            .filter(v => v !== "");
-
-         // add new boats
-         for (const name of names) {
-            if (!nextBoats.has(name)) {
-               nextBoats.set(name, new Heats(name, 2));
-            }
+         if (i === prev.length - 1 && next[i].name.trim() !== "") {
+            next.push({ name: "", type: "" });
          }
 
-         // remove deleted boats
-         for (const name of nextBoats.keys()) {
-            if (!names.includes(name)) {
-            nextBoats.delete(name);
-            }
-         }
+         setBoats(prevBoats => {
+            const nextBoats = new Map();
 
-         return nextBoats;
+            for (const { name, type } of next) {   // ✅ use next
+               const trimmed = name.trim();
+               if (!trimmed) continue;
+
+               if (prevBoats.has(trimmed)) {
+                  nextBoats.set(trimmed, prevBoats.get(trimmed));
+               } else {
+                  nextBoats.set(trimmed, new Heats(trimmed, 2, type));
+               }
+            }
+            return nextBoats;
+         })
+
+         return next;
       })
    }
+
 
    const handleBoatClick = (boatName) => {
       setActiveBoat(boatName);
@@ -94,13 +91,26 @@ function App() {
          <h1> Dragon Boat Lineup Maker</h1>
 
          <div className="boat-list">
-            {boatInputs.map((value, i) => (
-               <input
-                  key={i}
-                  value={value}
-                  placeholder={i === boatInputs.length - 1 ? "Add boat…" : ""}
-                  onChange={e => updateBoatInput(i, e.target.value)}
-               />
+            {boatInputs.map((boat, i) => (
+
+               <div key={i} className="boat-row">
+
+                  <select
+                     value={boat.type}
+                     onChange={e => updateBoatInput(i, {type : e.target.value})}
+                  >
+                     <option value="Open">Open</option>
+                     <option value="Womens">Womens</option>
+                     <option value="Mixed">Mixed</option>
+                  </select>
+
+                  <input
+                     value={boat.name}
+                     placeholder={i === boatInputs.length - 1 ? "Add boat…" : ""}
+                     onChange={e => updateBoatInput(i, { name : e.target.value} )}
+                  />
+
+               </div>
             ))}
          </div>
 

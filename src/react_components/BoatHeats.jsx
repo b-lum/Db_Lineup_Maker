@@ -4,7 +4,7 @@ import LineupGrid from "./LineupGrid.jsx";
 export default function BoatHeats({
   heats,
   roster,
-  onUpdate
+  onUpdate,
 }) {
 
   const movePerson = ({ from, to }) => {
