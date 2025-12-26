@@ -111,7 +111,7 @@ class Lineup {
       rows.push(`Row\tLeft\tRight`);
 
 
-      for (let i = 0; i < this.grid.length; i++) {
+      for (let i = 1; i < this.grid.length; i++) {
         const left = this.grid[i][0]?.name ?? "";
         const right = this.grid[i][1]?.name ?? "";
         rows.push(`${i}\t${left}\t${right}`);

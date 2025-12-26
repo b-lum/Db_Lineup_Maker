@@ -67,7 +67,12 @@ function App() {
                if (!trimmed) continue;
 
                if (prevBoats.has(trimmed)) {
-                  nextBoats.set(trimmed, prevBoats.get(trimmed));
+                  const prev = prevBoats.get(trimmed);
+                  if (prev.boatType !== type) {
+                     nextBoats.set(trimmed, new Heats(trimmed, 2, type));
+                  } else {
+                     nextBoats.set(trimmed, prev);
+                     }
                } else {
                   nextBoats.set(trimmed, new Heats(trimmed, 2, type));
                }
