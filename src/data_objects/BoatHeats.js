@@ -2,7 +2,7 @@ import { Lineup } from "../lineup_objects/Lineup.js";
 import { MixedLineup } from "../lineup_objects/MixedLineup.js";
 import { WomensLineup } from "../lineup_objects/WomensLineup.js";
 
-class Heats {
+class BoatHeats {
 
    constructor(boatName, numHeats, boatType) {
       this.lineups = new Map();
@@ -96,7 +96,7 @@ class Heats {
    }
 
    clone() {
-      const copy = new Heats(this.boatType, this.numHeats, this.boatType);
+      const copy = new BoatHeats(this.boatName, this.numHeats, this.boatType);
       copy.lineups = new Map();
 
       for (const [idx, lineup] of this.lineups) {
@@ -125,6 +125,7 @@ class Heats {
 
       return lineupTitleLine + "\n" + rows.join("\n");
    }
+   
 }
 
-export { Heats };
+export { BoatHeats };

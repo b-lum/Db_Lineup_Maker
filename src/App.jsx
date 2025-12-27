@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Person } from "./data_objects/Person.js"
 import { SortedArray } from "./data_objects/SortedArray.js"
-import { Heats } from "./data_objects/Heats.js";
-import BoatHeats from "./react_components/BoatHeats.jsx";
+import { BoatHeats } from "./data_objects/BoatHeats.js";
+import BoatHeatsDisplay from "./react_components/BoatHeatsDisplay.jsx";
 import CopyButton from "./react_components/CopyButton.jsx";
 
 import Papa from "papaparse";
@@ -12,10 +12,25 @@ function App() {
 
    const compareByWeight = (a, b) => a.weight - b.weight;
 
+   const computerPersonCounter = (boats) => {
+      const counter = new Map();
+
+      for (const boatHeats of boats.values()) {
+         for (const lineup of boatHeats.lineups.values()) {
+            for (const person of lineup.peopleSet) {
+               counter.set(person, (map.get(person) || 0) + 1);
+            }
+         }
+      }
+
+      return counter;
+   }
+
    const [roster, setRoster] = useState(
       () => new SortedArray(compareByWeight)
-   )
-   const [boats, setBoats] = useState (() => new Map())
+   );
+   const [boats, setBoats] = useState (() => new Map());
+
 
    const [boatInputs, setBoatInputs] = useState([
       { name: "", type: "" }
@@ -23,32 +38,44 @@ function App() {
    const [activeBoat, setActiveBoat] = useState(null);
    const [rosterFileName, setRosterFileName] = useState("No file chosen");
 
+   const personCounts = computerPersonCounter(boats);
 
-   const populateRoster = event => {
-      const file = event.target.files[0];
-      if (!file) return;
 
-      setRosterFileName(file.name);
-
-      Papa.parse(file, {
+   const populateRosterFromGoogleSheet = (csvURL) => {
+      Papa.parse(csvURL,
+      {
          header: true,
+         download: true,
          complete: results => {
-            const next = new SortedArray(compareByWeight);
+         const next = new SortedArray(compareByWeight);
+
             roster.getAll().forEach(p => next.add(p));
+
             results.data.forEach(row => {
                if (!row.name) return;
+
                next.add(new Person(
                   row.name, 
                   parseFloat(row.weight), 
                   row.gender
-               ));
+               ))
             })
             setRoster(next);
          }
       })
-
-      event.target.value = "";
    }
+
+   useEffect(() => {
+      const load = () => {
+         populateRosterFromGoogleSheet(
+            "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1ZfYkpRQgH5LRrsJPxTGeKe98sQ-pzlMeXcnCrCHNrgjQ6gaNPuv2QAQftLUyLOFMFWpQxlTDg9uu/pub?output=csv"
+         )
+      };
+
+      load();
+      const id = setInterval(load, 30000);
+      return () => clearInterval(id);
+   }, []);
 
    const updateBoatInput = (i, changes) => {
       setBoatInputs(prev => {
@@ -69,12 +96,12 @@ function App() {
                if (prevBoats.has(trimmed)) {
                   const prev = prevBoats.get(trimmed);
                   if (prev.boatType !== type) {
-                     nextBoats.set(trimmed, new Heats(trimmed, 2, type));
+                     nextBoats.set(trimmed, new BoatHeats(trimmed, 2, type));
                   } else {
                      nextBoats.set(trimmed, prev);
                      }
                } else {
-                  nextBoats.set(trimmed, new Heats(trimmed, 2, type));
+                  nextBoats.set(trimmed, new BoatHeats(trimmed, 2, type));
                }
             }
             return nextBoats;
@@ -119,24 +146,6 @@ function App() {
             ))}
          </div>
 
-         <div className="upload-container">
-            <label htmlFor="roster-upload" className="upload-label">
-               Choose File
-            </label>
-
-            <span className="file-status">
-               {rosterFileName}
-            </span>
-
-            <input
-               type="file"
-               accept=".csv"
-               id="roster-upload"
-               onChange={populateRoster}
-               style={{ display: "none" }}
-            />
-         </div>
-
          <div>
             {Array.from(boats.entries()).map(([name, heats]) => (
                <button key={name} onClick={() => handleBoatClick(name)}>
@@ -147,7 +156,7 @@ function App() {
 
          <div>
             {activeBoat && boats.has(activeBoat) && (
-               <BoatHeats
+               <BoatHeatsDisplay
                   heats={boats.get(activeBoat)}
                   roster={roster}
                   onUpdate={(newHeats) => {
