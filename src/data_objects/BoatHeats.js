@@ -2,8 +2,22 @@ import { Lineup } from "../lineup_objects/Lineup.js";
 import { MixedLineup } from "../lineup_objects/MixedLineup.js";
 import { WomensLineup } from "../lineup_objects/WomensLineup.js";
 
+
+/**
+ * Class representing a set of heats for a single boat.
+ * Manages multiple Lineup objects per heat and provides methods
+ * for moving or swapping participants within and across heats or with a roster.
+ */
 class BoatHeats {
 
+
+   /**
+    * Create a new BoatHeats instance.
+    * Initializes the specified number of heats with the appropriate lineup type.
+    * @param {string} boatName - The name of the boat.
+    * @param {number} numHeats - The number of heats for this boat.
+    * @param {string} boatType - Type of boat lineups: "Lineup", "Mixed", or "Womens".
+    */
    constructor(boatName, numHeats, boatType) {
       this.lineups = new Map();
       for (let i = 0; i < numHeats; i++) {
@@ -20,10 +34,27 @@ class BoatHeats {
 
    }
 
+   /**
+    * Replace or update a lineup at a specific heat index.
+    * @param {number} i - Heat index (0-based).
+    * @param {Lineup} lineup - The Lineup object to set for this heat.
+    */
    addLineup(i, lineup) {
       this.lineups.set(i, lineup);
    }
 
+   /**
+    * Move or swap a person between heats or between a heat and a roster.
+    * Supports multiple cases:
+    *   - Swap within the same heat
+    *   - Swap across different heats
+    *   - Move from roster to heat
+    *   - Move from heat to roster
+    * @param {Object} param0 - Object describing the move.
+    * @param {Object} param0.from - Source location of the person.
+    * @param {Object} param0.to - Destination location of the person.
+    * @param {Object} roster - Roster object providing a getAll() method to access all participants.
+    */
    movePerson({ from, to }, roster) {
       // SAME HEAT SWAP
       if (
@@ -95,6 +126,11 @@ class BoatHeats {
       }
    }
 
+   /**
+    * Create a shallow clone of the current BoatHeats instance.
+    * Each lineup is also cloned to produce independent lineups.
+    * @returns {BoatHeats} A new BoatHeats instance with cloned lineups.
+    */
    clone() {
       const copy = new BoatHeats(this.boatName, this.numHeats, this.boatType);
       copy.lineups = new Map();
@@ -106,6 +142,11 @@ class BoatHeats {
       return copy;
    }
 
+   /**
+    * Generate a string representation of all heats for a master sheet.
+    * Combines each heat's lineup into a tab-separated format.
+    * @returns {string} Master sheet representation of all heats for this boat.
+    */
    mastersheetStr() {
 
       const lineupsArr = Array.from(this.lineups.values());

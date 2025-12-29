@@ -1,6 +1,17 @@
 import { Person } from "../data_objects/Person.js"; 
 
+/**
+ * Class representing a dragon boat lineup.
+ * Maintains a grid of Person objects, tracks total weights on each side,
+ * and provides utility methods to add, remove, swap, and display the lineup.
+ */
 class Lineup {
+
+   /**
+    * Create a new Lineup.
+    * Initializes an 11x2 grid (rows x columns), a set to track unique people,
+    * and total left and right side weights.
+    */
    constructor() {
       const rows = 11
       const cols = 2
@@ -10,6 +21,15 @@ class Lineup {
       this.rightWeight = 0
    }
 
+   /**
+    * Add a person to the lineup grid at a specified row and column.
+    * Updates total left/right weight if row is not the first row.
+    * @param {number} row - The row index (0-based) to place the person.
+    * @param {number} col - The column index (0 for left, 1 for right) to place the person.
+    * @param {Person} person - The Person object to add.
+    * @returns {boolean} True if added successfully, false if invalid or duplicate.
+    * @throws {Error} If row or column is out of bounds.
+    */
    addPerson(row, col, person) {
       // Check for null or duplicate by name
       if (person === null || this.peopleSet.has(person)) {
@@ -36,6 +56,12 @@ class Lineup {
       return true;
    }
 
+   /**
+    * Remove a person from the lineup at a specified row and column.
+    * Updates total left/right weight if row is not the first row.
+    * @param {number} row - The row index (0-based) of the person to remove.
+    * @param {number} col - The column index (0 for left, 1 for right) of the person to remove.
+    */
    removePerson(row, col) {
       let p = this.grid[row][col];
       
@@ -52,6 +78,15 @@ class Lineup {
       }
    }
 
+   /**
+    * Swap two people within the lineup grid.
+    * Adjusts total left/right weights accordingly.
+    * @param {number} row1 - Row index of the first person.
+    * @param {number} col1 - Column index of the first person.
+    * @param {number} row2 - Row index of the second person.
+    * @param {number} col2 - Column index of the second person.
+    * @throws {Error} If any row or column index is out of bounds.
+    */
    swapPerson(row1, col1, row2, col2) {
       // Bounds check
       if (row1 < 0 || row1 >= this.grid.length || col1 < 0 || col1 >= this.grid[0].length ||
@@ -84,6 +119,9 @@ class Lineup {
       console.log(`Swapped positions: (${row1},${col1}) ↔ (${row2},${col2})`);
    }
 
+   /**
+    * Display the current lineup grid and total weights to the console.
+    */
    showGrid() {
       console.log("Lineup Grid:");
       for (let i = 0; i < this.grid.length; i++) {
@@ -93,6 +131,11 @@ class Lineup {
       console.log(`Total Left Weight: ${this.leftWeight}, Total Right Weight: ${this.rightWeight}\n`);
    }
 
+   /**
+    * Create a shallow clone of the current Lineup.
+    * The grid and peopleSet are copied, so the clone is independent of the original.
+    * @returns {Lineup} A new Lineup instance with the same people and weights.
+    */
    clone() {
       const l = new Lineup();
       l.grid = this.grid.map(r => [...r]);
@@ -102,6 +145,11 @@ class Lineup {
       return l;
    }
 
+   /**
+    * Generate a master sheet string representation of the lineup.
+    * Format includes caller, row-by-row left/right names, and steer.
+    * @returns {string[]} Array of strings representing the lineup for a master sheet.
+    */
    mastersheetStr() {
 
       const rows = [];

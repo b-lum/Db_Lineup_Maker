@@ -12,7 +12,7 @@ function App() {
 
    const compareByWeight = (a, b) => a.weight - b.weight;
 
-   const computerPersonCounter = (boats) => {
+   /*const computerPersonCounter = (boats) => {
       const counter = new Map();
 
       for (const boatHeats of boats.values()) {
@@ -24,7 +24,7 @@ function App() {
       }
 
       return counter;
-   }
+   }*/
 
    const [roster, setRoster] = useState(
       () => new SortedArray(compareByWeight)
@@ -38,7 +38,7 @@ function App() {
    const [activeBoat, setActiveBoat] = useState(null);
    const [rosterFileName, setRosterFileName] = useState("No file chosen");
 
-   const personCounts = computerPersonCounter(boats);
+   //const personCounts = computerPersonCounter(boats);
 
 
    const populateRosterFromGoogleSheet = (csvURL) => {
