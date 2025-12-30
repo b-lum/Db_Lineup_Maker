@@ -1,7 +1,7 @@
 .app-container {
   font-family: Arial, sans-serif;
   padding: 20px;
-  max-width: 1800px;
+  max-width: 2400px;
   margin: 0 auto;
 }
 
@@ -61,7 +61,9 @@
   display: flex;       /* put children side by side */
   gap: 50px;           /* space between grids */
   align-items: flex-start;
-  flex-wrap: wrap; 
+  flex-wrap: nowrap;
+  overflow-x: auto; 
+  padding-bottom: 10px;
 }
 
 .lineup-container > .item {
@@ -75,9 +77,9 @@
 }
 
 .scroll-container {
-  max-height: 800px; /* or whatever height you want */
-  overflow-y: auto;   /* vertical scroll */
-  overflow-x: hidden; /* optional: hide horizontal scroll */
+  max-width: 1000px; /* or whatever height you want */
+  overflow-y: hidden;   /* vertical scroll */
+  overflow-x: auto; /* optional: hide horizontal scroll */
   /*border: 1px solid #ccc; /* optional: visual border */
   padding: 10px; /* optional spacing */
 }
@@ -112,3 +114,20 @@ p {
   color: #555;
 }
 
+.people-item .lineup-grid {
+  width: max-content;
+}
+
+.people-item .lineup-row {
+  flex-wrap: nowrap;
+}
+
+.weight-row {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.lineup-cell.selected {
+  outline: 3px solid #ffd54f;
+  background-color: #0b4f6c;
+}

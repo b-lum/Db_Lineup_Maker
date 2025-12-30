@@ -89,19 +89,19 @@ function App() {
          setBoats(prevBoats => {
             const nextBoats = new Map();
 
-            for (const { name, type } of next) {   // ✅ use next
+            for (const { name, type } of next) {
                const trimmed = name.trim();
                if (!trimmed) continue;
 
                if (prevBoats.has(trimmed)) {
                   const prev = prevBoats.get(trimmed);
                   if (prev.boatType !== type) {
-                     nextBoats.set(trimmed, new BoatHeats(trimmed, 2, type));
+                     nextBoats.set(trimmed, new BoatHeats(trimmed, 3, type));
                   } else {
                      nextBoats.set(trimmed, prev);
                      }
                } else {
-                  nextBoats.set(trimmed, new BoatHeats(trimmed, 2, type));
+                  nextBoats.set(trimmed, new BoatHeats(trimmed, 3, type));
                }
             }
             return nextBoats;

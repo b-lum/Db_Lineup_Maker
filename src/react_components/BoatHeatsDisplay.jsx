@@ -68,6 +68,7 @@ export default function BoatHeats({
       })
     }
   })
+  
 
   /**
    * Convert a sorted array (roster) into a 2D grid with 2 columns for display.
@@ -76,8 +77,8 @@ export default function BoatHeats({
    */
   const getPeopleGrid = sorted => {
     const people = sorted.getAll();
-    const cols = 2;
-    const rows = Math.ceil(people.length / cols);
+    const rows = 2;
+    const cols = Math.ceil(people.length / rows);
     return Array.from({ length: rows }, (_, r) =>
       Array.from({ length: cols }, (_, c) => people[r * cols + c] ?? null)
     );
@@ -97,34 +98,30 @@ export default function BoatHeats({
             />
             <div className="lineup-row weight-row">
               <div className="lineup-label" />
-                Left Weight:
               <div>
-                {lineup.leftWeight}
+                {`${lineup.leftWeight} lbs`}
               </div>
 
               <div className="lineup-label" />
-                Right Weight:
               <div>
-                {lineup.rightWeight}
+                {`${lineup.rightWeight} lbs`}
               </div>
 
             </div>
           </div>
         ))}
-
-        <div className="scroll-container">
-
-          <div className="item people-item">
-            <LineupGrid
-              title="Roster"
-              grid={getPeopleGrid(roster)}
-              gridMeta={{ type: "sorted" }}
-              dragHandler={dragHandler}
-            />
-          </div>
-        </div>
       </div>
 
+      <div className="scroll-container">
+        <div className="item people-item">
+          <LineupGrid
+            title="Roster"
+            grid={getPeopleGrid(roster)}
+            gridMeta={{ type: "sorted" }}
+            dragHandler={dragHandler}
+          />
+        </div>
+      </div>
     </div>
   )
 }

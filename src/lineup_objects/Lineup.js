@@ -15,7 +15,7 @@ class Lineup {
    constructor() {
       const rows = 11
       const cols = 2
-      this.peopleSet = new Set();
+      this.peopleMap = new Map();
       this.grid = Array.from({length : rows}, () => Array(cols).fill(null));
       this.leftWeight = 0
       this.rightWeight = 0
@@ -32,7 +32,7 @@ class Lineup {
     */
    addPerson(row, col, person) {
       // Check for null or duplicate by name
-      if (person === null || this.peopleSet.has(person)) {
+      if (person === null || this.peopleMap.has(person.name)) {
          console.log(`Cannot add ${person?.name || "null"}: already in lineup or invalid`);
          return false; 
       }
@@ -44,7 +44,7 @@ class Lineup {
 
       // Add person to grid
       this.grid[row][col] = person;
-      this.peopleSet.add(person);
+      this.peopleMap.set(person.name, person);
 
       // Update weights if not in first row
       if (row !== 0) {
@@ -70,7 +70,7 @@ class Lineup {
          else if (col === 1 && row !== 0) this.rightWeight -= p.weight;
 
          this.grid[row][col] = null
-         this.peopleSet.delete(p);
+         this.peopleMap.delete(p.name);
       
          console.log(`Removed ${p.name} from row ${row}, column ${col}`);
       } else {
@@ -98,10 +98,10 @@ class Lineup {
       let p2 = this.grid[row2][col2];
 
       // Update weights: remove old weights if row != 0
-      if (row1 !== 0 && col1 === 0 && p1) this.leftWeight -= p1.weight;
-      if (row1 !== 0 && col1 === 1 && p1) this.rightWeight -= p1.weight;
-      if (row2 !== 0 && col2 === 0 && p2) this.leftWeight -= p2.weight;
-      if (row2 !== 0 && col2 === 1 && p2) this.rightWeight -= p2.weight;
+      //if (row1 !== 0 && col1 === 0 && p1) this.leftWeight -= p1.weight;
+      //if (row1 !== 0 && col1 === 1 && p1) this.rightWeight -= p1.weight;
+      //if (row2 !== 0 && col2 === 0 && p2) this.leftWeight -= p2.weight;
+      //if (row2 !== 0 && col2 === 1 && p2) this.rightWeight -= p2.weight;
       
       // Swap in grid
       if (p1) this.removePerson(row1, col1);
@@ -110,10 +110,10 @@ class Lineup {
       if (p2) this.addPerson(row1, col1, p2);
 
       // Update weights: add new weights if row != 0
-      if (row1 !== 0 && col1 === 0 && p2) this.leftWeight += p2.weight;
-      if (row1 !== 0 && col1 === 1 && p2) this.rightWeight += p2.weight;
-      if (row2 !== 0 && col2 === 0 && p1) this.leftWeight += p1.weight;
-      if (row2 !== 0 && col2 === 1 && p1) this.rightWeight += p1.weight;
+      //if (row1 !== 0 && col1 === 0 && p2) this.leftWeight += p2.weight;
+      //if (row1 !== 0 && col1 === 1 && p2) this.rightWeight += p2.weight;
+      //if (row2 !== 0 && col2 === 0 && p1) this.leftWeight += p1.weight;
+      //if (row2 !== 0 && col2 === 1 && p1) this.rightWeight += p1.weight;
 
       // Log swap
       console.log(`Swapped positions: (${row1},${col1}) ↔ (${row2},${col2})`);
@@ -141,7 +141,7 @@ class Lineup {
       l.grid = this.grid.map(r => [...r]);
       l.leftWeight = this.leftWeight;
       l.rightWeight = this.rightWeight;
-      l.peopleSet = new Set(this.peopleSet);
+      l.peopleMap = new Map(this.peopleMap);
       return l;
    }
 

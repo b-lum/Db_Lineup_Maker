@@ -35,7 +35,7 @@ class WomensLineup extends Lineup {
       l.grid = this.grid.map(r => [...r]);
       l.leftWeight = this.leftWeight;
       l.rightWeight = this.rightWeight;
-      l.peopleSet = new Set(this.peopleSet);
+      l.peopleMap = new Map(this.peopleMap);
       return l;
    }
 }
