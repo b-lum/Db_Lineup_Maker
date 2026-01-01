@@ -10,7 +10,7 @@ import { WomensLineup } from "../lineup_objects/WomensLineup.js";
  */
 class BoatHeats {
 
-
+   
    /**
     * Create a new BoatHeats instance.
     * Initializes the specified number of heats with the appropriate lineup type.

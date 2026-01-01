@@ -31,6 +31,7 @@
   font-weight: bold;
   user-select: none;
   transition: background-color 0.2s;
+  cursor: pointer;
 }
 
 .lineup-label {
@@ -128,6 +129,6 @@ p {
 }
 
 .lineup-cell.selected {
-  outline: 3px solid #ffd54f;
-  background-color: #0b4f6c;
+  outline: 2px solid #4caf50;
+  background-color: rgba(76, 175, 80, 0.15);
 }

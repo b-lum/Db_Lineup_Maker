@@ -1,4 +1,5 @@
 import "../App.css";
+import { useState } from "react";
 import LineupGrid from "./LineupGrid.jsx";
 
 
@@ -19,6 +20,8 @@ export default function BoatHeats({
   roster,
   onUpdate,
 }) {
+
+  const [selectedPersonName, setSelectedPersonName] = useState(null);
 
   /**
    * Move or swap a person between heats or between heat and roster.
@@ -68,6 +71,36 @@ export default function BoatHeats({
       })
     }
   })
+
+
+  const handleCellClick = (meta, row, col, personInCell) => {
+    // Clicking a roster person = select
+    if (meta.type === "sorted" && personInCell) {
+      setSelectedPersonName(name =>
+        name === personInCell.name ? null : personInCell.name
+      );
+      return;
+    }
+
+    // Clicking a heat seat
+    if (meta.type === "heat") {
+      // Must have someone selected
+      if (!selectedPersonName) return;
+
+      const next = heats.clone();
+
+      next.movePerson(
+        {
+          from: { type: "sorted", personName: selectedPersonName },
+          to: { ...meta, row, col }
+        },
+        roster
+      );
+
+      onUpdate(next);
+      setSelectedPersonName(null);
+    }
+  };
   
 
   /**
@@ -95,6 +128,8 @@ export default function BoatHeats({
               grid={lineup.grid}
               gridMeta={{ type: "heat", heatIdx: idx }}
               dragHandler={dragHandler}
+              onCellClick={handleCellClick}
+              selectedPerson={selectedPersonName}
             />
             <div className="lineup-row weight-row">
               <div className="lineup-label" />
@@ -119,6 +154,8 @@ export default function BoatHeats({
             grid={getPeopleGrid(roster)}
             gridMeta={{ type: "sorted" }}
             dragHandler={dragHandler}
+            onCellClick={handleCellClick}
+            selectedPerson={selectedPersonName}
           />
         </div>
       </div>

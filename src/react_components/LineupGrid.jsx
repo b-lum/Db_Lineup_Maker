@@ -22,6 +22,8 @@ export default function LineupGrid({
   grid,
   gridMeta,
   dragHandler,
+  onCellClick,
+  selectedPersonName,
 }) {
   return (
     <div className="lineup-grid">
@@ -43,6 +45,8 @@ export default function LineupGrid({
               key={j}
               person={p}
               dragProps={dragHandler(gridMeta, i, j)}
+              onClick={() => onCellClick(gridMeta, i, j, p)}
+              selected={p && p.name === selectedPersonName}
             />
           ))}
 

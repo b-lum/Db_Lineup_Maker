@@ -11,10 +11,19 @@
  *
  * @returns {JSX.Element} The rendered lineup cell component.
  */
-export default function PersonCell({ person, dragProps }) {
+export default function PersonCell({ 
+  person,
+  dragProps,
+  onClick,
+  selected = false,
+}) {
     return (
       <div 
-      className='lineup-cell' draggable={!!person} {...dragProps}>
+      className={`lineup-cell ${selected ? "selected" : ""}`}
+      draggable={!!person}
+      onClick={onClick}
+      {...dragProps}
+      >
         {person ? (
           <>
             <span className="person-name">{person.name}</span><br />
