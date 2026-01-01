@@ -132,3 +132,21 @@ p {
   outline: 2px solid #4caf50;
   background-color: rgba(76, 175, 80, 0.15);
 }
+
+.count-table {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns: Person | Count */
+  gap: 8px;
+  max-width: 300px;
+}
+
+.grid-header {
+  font-weight: bold;
+  border-bottom: 1px solid #aaa;
+  padding: 4px;
+}
+
+.grid-cell {
+  padding: 4px;
+  border-bottom: 1px solid #eee;
+}

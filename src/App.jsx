@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Person } from "./data_objects/Person.js"
 import { SortedArray } from "./data_objects/SortedArray.js"
 import { BoatHeats } from "./data_objects/BoatHeats.js";
 import BoatHeatsDisplay from "./react_components/BoatHeatsDisplay.jsx";
 import CopyButton from "./react_components/CopyButton.jsx";
+import PersonCounter from "./react_components/PersonCounter.jsx";
 
 import Papa from "papaparse";
 import "./App.css";
@@ -12,19 +13,6 @@ function App() {
 
    const compareByWeight = (a, b) => a.weight - b.weight;
 
-   /*const computerPersonCounter = (boats) => {
-      const counter = new Map();
-
-      for (const boatHeats of boats.values()) {
-         for (const lineup of boatHeats.lineups.values()) {
-            for (const person of lineup.peopleSet) {
-               counter.set(person, (map.get(person) || 0) + 1);
-            }
-         }
-      }
-
-      return counter;
-   }*/
 
    const [roster, setRoster] = useState(
       () => new SortedArray(compareByWeight)
@@ -37,8 +25,6 @@ function App() {
    ]);   
    const [activeBoat, setActiveBoat] = useState(null);
    const [rosterFileName, setRosterFileName] = useState("No file chosen");
-
-   //const personCounts = computerPersonCounter(boats);
 
 
    const populateRosterFromGoogleSheet = (csvURL) => {
@@ -76,6 +62,20 @@ function App() {
       const id = setInterval(load, 30000);
       return () => clearInterval(id);
    }, []);
+
+
+   const personCounts = useMemo(() => {
+      const map = new Map();
+      for (const boat of boats.values()) {
+         for (const lineup of boat.lineups.values()) {
+            for (const person of lineup.peopleMap.values()) {
+               map.set(person.name, (map.get(person.name) ?? 0) + 1);
+            }
+         }
+      }
+      return map
+   }, [boats]);
+
 
    const updateBoatInput = (i, changes) => {
       setBoatInputs(prev => {
@@ -122,6 +122,8 @@ function App() {
 
          <h1> Dragon Boat Lineup Maker</h1>
 
+         <div lineup-grid>
+         </div>
          <div className="boat-list">
             {boatInputs.map((boat, i) => (
 

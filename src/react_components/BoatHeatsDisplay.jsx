@@ -15,7 +15,7 @@ import LineupGrid from "./LineupGrid.jsx";
  *
  * @returns {JSX.Element} The rendered BoatHeats component.
  */
-export default function BoatHeats({
+export default function BoatHeatsDisplay({
   heats,
   roster,
   onUpdate,
