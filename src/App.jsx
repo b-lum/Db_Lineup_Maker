@@ -122,8 +122,6 @@ function App() {
 
          <h1> Dragon Boat Lineup Maker</h1>
 
-         <div lineup-grid>
-         </div>
          <div className="boat-list">
             {boatInputs.map((boat, i) => (
 
@@ -148,26 +146,31 @@ function App() {
             ))}
          </div>
 
-         <div>
-            {Array.from(boats.entries()).map(([name, heats]) => (
-               <button key={name} onClick={() => handleBoatClick(name)}>
-                  {name}
-               </button>
-            ))}
-         </div>
+            <div>
+               {Array.from(boats.entries()).map(([name, heats]) => (
+                  <button key={name} onClick={() => handleBoatClick(name)}>
+                     {name}
+                  </button>
+               ))}
+            </div>
+         <div className="heat-count-grid">
+            <div className="heat-display">
+               {activeBoat && boats.has(activeBoat) && (
+                  <BoatHeatsDisplay
+                     heats={boats.get(activeBoat)}
+                     roster={roster}
+                     onUpdate={(newHeats) => {
+                        const next = new Map(boats);
+                        next.set(activeBoat, newHeats);
+                        setBoats(next);
+                     }}
+                  />
+               )}
+            </div>
 
-         <div>
-            {activeBoat && boats.has(activeBoat) && (
-               <BoatHeatsDisplay
-                  heats={boats.get(activeBoat)}
-                  roster={roster}
-                  onUpdate={(newHeats) => {
-                     const next = new Map(boats);
-                     next.set(activeBoat, newHeats);
-                     setBoats(next);
-                  }}
-               />
-            )}
+            <div className="person-count-display">
+               <PersonCounter personCounts={personCounts} />
+            </div>
          </div>
 
          {activeBoat && boats.has(activeBoat) && (

@@ -1,3 +1,4 @@
+import React from "react";
 import "../App.css";
 
 export default function PersonCounter({ personCounts }) {
@@ -9,10 +10,10 @@ export default function PersonCounter({ personCounts }) {
          <div className="grid-header">Count</div>
 
          {entries.map(([name, count]) => (
-            <>
-               <div className="grid-cell" key={`${name}-name`}>{name}</div>
-               <div className="grid-cell" key={`${name}-count`}>{count}</div>
-            </>
+            <React.Fragment key={name}>
+               <div className="grid-cell">{name}</div>
+               <div className="grid-cell">{count}</div>
+            </React.Fragment>
          ))}
       </div>
    )

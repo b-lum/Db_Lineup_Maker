@@ -150,3 +150,20 @@ p {
   padding: 4px;
   border-bottom: 1px solid #eee;
 }
+
+.heat-count-grid {
+  display: flex;           /* side by side layout */
+  gap: 24px;               /* space between the two sections */
+  align-items: flex-start; /* top-align both sections */
+  margin-top: 16px;
+}
+
+/* Optional: limit width of person count table */
+.person-count-display {
+  min-width: 200px;
+}
+
+/* Optional: let the heat display take up remaining space */
+.heat-display {
+  flex: 1;
+}
