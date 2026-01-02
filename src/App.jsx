@@ -1,3 +1,16 @@
+/**
+ * App.jsx
+ *
+ * Main application component for the Dragon Boat Lineup Maker.
+ *
+ * Responsibilities:
+ * - Load and maintain the master roster (from Google Sheets CSV)
+ * - Manage boat definitions and their associated heats
+ * - Track the currently active boat
+ * - Aggregate per-person participation counts across all boats/heats
+ * - Coordinate data flow between UI components
+ */
+
 import { useState, useEffect, useMemo } from "react";
 import { Person } from "./data_objects/Person.js"
 import { SortedArray } from "./data_objects/SortedArray.js"
@@ -11,22 +24,50 @@ import "./App.css";
 
 function App() {
 
+   /**
+    * Comparator used by SortedArray to keep the roster ordered by weight.
+    */
    const compareByWeight = (a, b) => a.weight - b.weight;
 
-
+   /**
+    * Master roster of all people.
+    * Stored as a SortedArray<Person>, ordered by weight.
+    */
    const [roster, setRoster] = useState(
       () => new SortedArray(compareByWeight)
    );
+
+   /**
+    * Map of boat name -> BoatHeats instance.
+    * Represents all boats currently defined in the UI.
+    */
    const [boats, setBoats] = useState (() => new Map());
 
-
+   /**
+    * Controlled inputs for boat creation/editing.
+    * Always keeps one empty row at the end for easy adding.
+    */
    const [boatInputs, setBoatInputs] = useState([
       { name: "", type: "" }
    ]);   
+
+   /**
+    * Name of the currently selected boat (or null if none).
+    */
    const [activeBoat, setActiveBoat] = useState(null);
+
+   /**
+    * Display name for the roster file (currently unused, but reserved).
+    */
    const [rosterFileName, setRosterFileName] = useState("No file chosen");
 
 
+   /**
+    * Loads roster data from a public Google Sheets CSV URL.
+    * Existing roster entries are preserved and merged.
+    *
+    * @param {string} csvURL - Public CSV export URL
+    */
    const populateRosterFromGoogleSheet = (csvURL) => {
       Papa.parse(csvURL,
       {
@@ -51,6 +92,10 @@ function App() {
       })
    }
 
+   /**
+    * Effect: periodically reloads the roster from Google Sheets.
+    * Runs once on mount and refreshes every 30 seconds.
+    */
    useEffect(() => {
       const load = () => {
          populateRosterFromGoogleSheet(
@@ -64,6 +109,12 @@ function App() {
    }, []);
 
 
+   /**
+    * Memoized map of person name -> number of times they appear
+    * across all boats, heats, and lineups.
+    *
+    * Recomputes only when `boats` changes.
+    */
    const personCounts = useMemo(() => {
       const map = new Map();
       for (const boat of boats.values()) {
@@ -77,6 +128,17 @@ function App() {
    }, [boats]);
 
 
+
+   /**
+    * Updates a boat input row and synchronizes the boats Map.
+    *
+    * - Automatically appends a new empty row when typing into the last row
+    * - Preserves existing BoatHeats objects when possible
+    * - Recreates BoatHeats if the boat type changes
+    *
+    * @param {number} i - Index of the boat input row
+    * @param {Object} changes - Partial update ({ name?, type? })
+    */
    const updateBoatInput = (i, changes) => {
       setBoatInputs(prev => {
          const next = [...prev];
@@ -112,6 +174,12 @@ function App() {
    }
 
 
+
+   /**
+    * Sets the currently active boat by name.
+    *
+    * @param {string} boatName
+    */
    const handleBoatClick = (boatName) => {
       setActiveBoat(boatName);
    }
@@ -182,12 +250,3 @@ function App() {
 }
 
 export default App;
-
-
-/*
-<BoatHeats
-            boatType="standard"
-            numHeats={3}
-            roster={roster}
-         />
-*/
