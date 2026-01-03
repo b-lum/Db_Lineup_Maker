@@ -21,7 +21,8 @@ export default function BoatHeatsDisplay({
   onUpdate,
 }) {
 
-  const [selectedPersonName, setSelectedPersonName] = useState(null);
+  const [selected, setSelected] = useState(null);
+  // selected = { type, heatIdx?, row, col, person }
 
   /**
    * Move or swap a person between heats or between heat and roster.
@@ -76,37 +77,45 @@ export default function BoatHeatsDisplay({
 
 
   const handleCellClick = (meta, row, col, personInCell) => {
-    // Clicking a roster person = select
-    if (meta.type === "sorted" && personInCell) {
-      setSelectedPersonName(name =>
-        name === personInCell.name ? null : personInCell.name
-      );
+    // Click empty cell → ignore
+    if (!personInCell && !selected) return;
+
+    // === SELECT ===
+    if (!selected && personInCell) {
+      setSelected({
+        type: meta.type,
+        heatIdx: meta.type === "heat" ? meta.heatIdx : null,
+        row,
+        col,
+        person: personInCell
+      });
       return;
     }
 
-    // Clicking a heat seat
-    if (meta.type === "heat" && selectedPersonName) {
-
-      const people = roster.getAll();
-      const idx = people.findIndex(p => p.name === selectedPersonName);
-      if (idx === -1) return;
-      
-      const COLS = 25;
-      const fromRow = Math.floor(idx / COLS);
-      const fromCol = idx % COLS
-
+    // === MOVE ===
+    if (selected) {
       const next = heats.clone();
 
-      next.movePerson(        
+      next.movePerson(
         {
-          from: { type: "sorted", row: fromRow, col: fromCol },
-          to: { type: "heat", heatIdx: meta.heatIdx, row, col }
+          from: {
+            type: selected.type,
+            heatIdx: selected.heatIdx,
+            row: selected.row,
+            col: selected.col
+          },
+          to: {
+            type: meta.type,
+            heatIdx: meta.type === "heat" ? meta.heatIdx : null,
+            row,
+            col
+          }
         },
         roster
       );
 
       onUpdate(next);
-      setSelectedPersonName(null);
+      setSelected(null);
     }
   };
   
@@ -137,7 +146,7 @@ export default function BoatHeatsDisplay({
               gridMeta={{ type: "heat", heatIdx: idx }}
               dragHandler={dragHandler}
               onCellClick={handleCellClick}
-              selectedPerson={selectedPersonName}
+              selected={selected}
             />
             <div className="lineup-row weight-row">
               <div className="lineup-label" />
@@ -163,7 +172,7 @@ export default function BoatHeatsDisplay({
             gridMeta={{ type: "sorted" }}
             dragHandler={dragHandler}
             onCellClick={handleCellClick}
-            selectedPerson={selectedPersonName}
+            selected={selected}  
           />
         </div>
       </div>

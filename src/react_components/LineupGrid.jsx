@@ -23,7 +23,7 @@ export default function LineupGrid({
   gridMeta,
   dragHandler,
   onCellClick,
-  selectedPersonName,
+  selected,
 }) {
   return (
     <div className="lineup-grid">
@@ -40,15 +40,25 @@ export default function LineupGrid({
             )
           )}
 
-          {row.map((p, j) => (
-            <PersonCell
-              key={j}
-              person={p}
-              dragProps={dragHandler(gridMeta, i, j)}
-              onClick={() => onCellClick(gridMeta, i, j, p)}
-              selected={p && p.name === selectedPersonName}
-            />
-          ))}
+          {row.map((p, j) => {
+            const isSelected =
+              selected &&
+              p &&
+              selected.type === gridMeta.type &&
+              selected.row === i &&
+              selected.col === j &&
+              (gridMeta.type !== "heat" ||
+                selected.heatIdx === gridMeta.heatIdx)
+
+              return (
+                <PersonCell
+                  key={j}
+                  person={p}
+                  dragProps={dragHandler(gridMeta, i, j)}
+                  onClick={() => onCellClick(gridMeta, i, j, p)}
+                  selected={isSelected}
+                />
+          )})}
 
           {gridMeta.type === "heat" && (
             i === 0 ? (
