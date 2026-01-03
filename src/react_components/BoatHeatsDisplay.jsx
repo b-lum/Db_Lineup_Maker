@@ -34,6 +34,8 @@ export default function BoatHeatsDisplay({
     const next = heats.clone();
     next.movePerson({ from, to }, roster);
     onUpdate(next);
+    console.log("movePerson", from, to);
+
   }
 
   /**
@@ -83,16 +85,22 @@ export default function BoatHeatsDisplay({
     }
 
     // Clicking a heat seat
-    if (meta.type === "heat") {
-      // Must have someone selected
-      if (!selectedPersonName) return;
+    if (meta.type === "heat" && selectedPersonName) {
+
+      const people = roster.getAll();
+      const idx = people.findIndex(p => p.name === selectedPersonName);
+      if (idx === -1) return;
+      
+      const COLS = 25;
+      const fromRow = Math.floor(idx / COLS);
+      const fromCol = idx % COLS
 
       const next = heats.clone();
 
-      next.movePerson(
+      next.movePerson(        
         {
-          from: { type: "sorted", personName: selectedPersonName },
-          to: { ...meta, row, col }
+          from: { type: "sorted", row: fromRow, col: fromCol },
+          to: { type: "heat", heatIdx: meta.heatIdx, row, col }
         },
         roster
       );
