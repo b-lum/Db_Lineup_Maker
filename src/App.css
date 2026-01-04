@@ -167,3 +167,7 @@ p {
 .heat-display {
   flex: 1;
 }
+button.copied {
+  background-color: #4caf50;
+  color: white;
+}
