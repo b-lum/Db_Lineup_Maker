@@ -13,7 +13,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Person } from "./data_objects/Person.js"
-import { SortedArray } from "./data_objects/SortedArray.js"
+import { Roster } from "./data_objects/Roster.js"
 import { BoatHeats } from "./data_objects/BoatHeats.js";
 import BoatHeatsDisplay from "./react_components/BoatHeatsDisplay.jsx";
 import CopyButton from "./react_components/CopyButton.jsx";
@@ -34,7 +34,7 @@ function App() {
     * Stored as a SortedArray<Person>, ordered by weight.
     */
    const [roster, setRoster] = useState(
-      () => new SortedArray(compareByWeight)
+      () => new Roster([], compareByWeight)
    );
 
    /**
@@ -69,28 +69,26 @@ function App() {
     * @param {string} csvURL - Public CSV export URL
     */
    const populateRosterFromGoogleSheet = (csvURL) => {
-      Papa.parse(csvURL,
-      {
+      Papa.parse(csvURL, {
          header: true,
          download: true,
-         complete: results => {
-         const next = new SortedArray(compareByWeight);
-
-            roster.getAll().forEach(p => next.add(p));
+         complete: (results) => {
+            let next = new Roster([], compareByWeight);
 
             results.data.forEach(row => {
                if (!row.name) return;
 
-               next.add(new Person(
-                  row.name, 
-                  parseFloat(row.weight), 
-                  row.gender
-               ))
-            })
+               next = next.add(new Person(
+                  row.name,
+                  parseFloat(row.weight),
+                  row.gender,
+                  [row["TT(L)"], row["TT(R)"]]
+               ));
+            });
             setRoster(next);
          }
-      })
-   }
+      });
+   };
 
    /**
     * Effect: periodically reloads the roster from Google Sheets.
@@ -185,9 +183,8 @@ function App() {
    }
 
    return (
-
+      <div className="page">
       <div className="app-container">
-
          <h1> Dragon Boat Lineup Maker</h1>
 
          <div className="boat-list">
@@ -246,6 +243,10 @@ function App() {
          )}
          
       </div>
+
+      </div>
+
+
    )
 }
 

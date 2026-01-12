@@ -1,8 +1,17 @@
+.page {
+  min-height: 100vh;
+  background: #282727; /* optional */
+}
+
 .app-container {
   font-family: Arial, sans-serif;
-  padding: 20px;
+  padding: 30px;
   max-width: 2400px;
+  width: 100%;
   margin: 0 auto;
+}
+.app-inner {
+  width: max-content; /* shrink to content */
 }
 
 .lineup-grid {
@@ -63,8 +72,8 @@
   gap: 50px;           /* space between grids */
   align-items: flex-start;
   flex-wrap: nowrap;
-  overflow-x: auto; 
   padding-bottom: 10px;
+  margin-top: -30px;
 }
 
 .lineup-container > .item {
@@ -78,9 +87,9 @@
 }
 
 .scroll-container {
-  max-width: 1000px; /* or whatever height you want */
-  overflow-y: hidden;   /* vertical scroll */
-  overflow-x: auto; /* optional: hide horizontal scroll */
+  max-height: 1000px; /* or whatever height you want */
+  overflow-x: hidden;   /* vertical scroll */
+  overflow-y: auto; /* optional: hide horizontal scroll */
   /*border: 1px solid #ccc; /* optional: visual border */
   padding: 10px; /* optional spacing */
 }
@@ -153,7 +162,7 @@ p {
 
 .heat-count-grid {
   display: flex;           /* side by side layout */
-  gap: 24px;               /* space between the two sections */
+  gap: 90px;               /* space between the two sections */
   align-items: flex-start; /* top-align both sections */
   margin-top: 16px;
 }
@@ -167,7 +176,14 @@ p {
 .heat-display {
   flex: 1;
 }
+
 button.copied {
   background-color: #4caf50;
   color: white;
+}
+
+.boat-heats {
+  display: flex;
+  gap: 30px;
+
 }

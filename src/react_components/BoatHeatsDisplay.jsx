@@ -126,9 +126,9 @@ export default function BoatHeatsDisplay({
    * @returns {Array<Array<Object|null>>} 2D array representing rows and columns of people.
    */
   const getPeopleGrid = sorted => {
-    const people = sorted.getAll();
-    const rows = 2;
-    const cols = Math.ceil(people.length / rows);
+    const people = sorted.toArray();
+    const cols = 2;
+    const rows = Math.ceil(people.length / cols);
     return Array.from({ length: rows }, (_, r) =>
       Array.from({ length: cols }, (_, c) => people[r * cols + c] ?? null)
     );
@@ -137,6 +137,19 @@ export default function BoatHeatsDisplay({
   return (
     <div className="boat-heats">
 
+      <div className="scroll-container">
+        <div className="item people-item">
+          <LineupGrid
+            title="Roster"
+            grid={getPeopleGrid(roster)}
+            gridMeta={{ type: "sorted" }}
+            dragHandler={dragHandler}
+            onCellClick={handleCellClick}
+            selected={selected}  
+          />
+        </div>
+      </div>
+      
       <div className="lineup-container">
         {Array.from(heats.lineups.entries()).map(([idx, lineup]) => (
           <div className="item" key={idx}>
@@ -164,18 +177,7 @@ export default function BoatHeatsDisplay({
         ))}
       </div>
 
-      <div className="scroll-container">
-        <div className="item people-item">
-          <LineupGrid
-            title="Roster"
-            grid={getPeopleGrid(roster)}
-            gridMeta={{ type: "sorted" }}
-            dragHandler={dragHandler}
-            onCellClick={handleCellClick}
-            selected={selected}  
-          />
-        </div>
-      </div>
+
     </div>
   )
 }

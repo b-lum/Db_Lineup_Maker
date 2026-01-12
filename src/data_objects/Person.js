@@ -7,11 +7,11 @@ class Person {
      * @param {string} name - The full name of the person.
      * @param {number} weight - The weight of the person in kilograms (or other consistent unit).
      * @param {string} gender - The gender of the person (e.g., "male", "female", "non-binary").
-     * @param {Array<number>} [oc_400_times=[0, 0]] - Optional array representing the person's 400m times in seconds.
+     * @param {Array<number>} [oc_400_times=[0, 0]] - Optional array representing the person's 400m times in seconds (left, right).
      * @param {boolean} [isSteer=false] - Indicates if the person is a steerer (responsible for steering the boat).
      * @param {boolean} [isCaller=false] - Indicates if the person is a caller (responsible for calling stroke rhythm).
      */
-    constructor(name, weight, gender, oc_400_times = [0, 0], isSteer = false, isCaller = false) {
+    constructor(name, weight, gender, oc_400_times = [None, None], isSteer = false, isCaller = false) {
         this.name = name;
         this.weight = weight;
         this.gender = gender;
@@ -28,6 +28,11 @@ class Person {
         console.log(`name : ${this.name}`);
         console.log(`weight : ${this.weight}`);
         console.log(`gender : ${this.gender}`);
+    }
+    
+    toString() {
+        return `Left TT: ${this.oc_400_times[0]}\n
+            Right TT: ${this.oc_400_times[1]}`
     }
 }
 

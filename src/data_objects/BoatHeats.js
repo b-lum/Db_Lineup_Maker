@@ -10,7 +10,7 @@ import { WomensLineup } from "../lineup_objects/WomensLineup.js";
  */
 class BoatHeats {
 
-   
+
    /**
     * Create a new BoatHeats instance.
     * Initializes the specified number of heats with the appropriate lineup type.
@@ -102,8 +102,8 @@ class BoatHeats {
       
       // ROSTER TO HEAT
       if (from.type === "sorted" && to.type === "heat") {
-         const peopleArray = roster.getAll();
-         const index = from.row * 25 + from.col;
+         const peopleArray = roster.toArray();
+         const index = from.row * 2 + from.col;
          const person = peopleArray[index];
          if (!person) return;
       
