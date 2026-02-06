@@ -1,0 +1,10 @@
+name = "dblineupmaker"
+type = "javascript"
+account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
+workers_dev = true
+
+compatibility_date = "2026-02-06"
+
+[site]
+bucket = "./dist"
+entry-point = "workers-site"

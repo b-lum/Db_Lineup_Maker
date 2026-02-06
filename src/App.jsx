@@ -24,6 +24,29 @@ import "./App.css";
 
 function App() {
 
+   const [debouncedSheetURL, setDebouncedSheetURL] = useState("");
+   const [debouncedSheetTab, setDebouncedSheetTab] = useState("");
+
+   const [sheetURL, setSheetURL] = useState("");
+   const [sheetTab, setSheetTab] = useState("");
+
+   useEffect(() => {
+      const id = setTimeout(() => {
+         setDebouncedSheetURL(sheetURL);
+         setDebouncedSheetTab(sheetTab);
+      }, 500);
+
+      return () => clearTimeout(id);
+   }, [sheetURL, sheetTab]);
+
+   const buildCSVUrl = (url, tabName) => {
+      if (!url || !tabName) return null;
+
+      // Strip anything after /edit
+      const base = url.split("/edit")[0];
+
+      return `${base}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
+   };
    /**
     * Comparator used by SortedArray to keep the roster ordered by weight.
     */
@@ -69,6 +92,8 @@ function App() {
     * @param {string} csvURL - Public CSV export URL
     */
    const populateRosterFromGoogleSheet = (csvURL) => {
+      if (!csvURL) return;
+
       Papa.parse(csvURL, {
          header: true,
          download: true,
@@ -85,26 +110,28 @@ function App() {
                   [row["TT(L)"], row["TT(R)"]]
                ));
             });
+
             setRoster(next);
          }
       });
    };
+
 
    /**
     * Effect: periodically reloads the roster from Google Sheets.
     * Runs once on mount and refreshes every 30 seconds.
     */
    useEffect(() => {
-      const load = () => {
-         populateRosterFromGoogleSheet(
-            "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1ZfYkpRQgH5LRrsJPxTGeKe98sQ-pzlMeXcnCrCHNrgjQ6gaNPuv2QAQftLUyLOFMFWpQxlTDg9uu/pub?output=csv"
-         )
-      };
+      const csvURL = buildCSVUrl(debouncedSheetURL, debouncedSheetTab);
+      if (!csvURL) return;
+
+      const load = () => populateRosterFromGoogleSheet(csvURL);
 
       load();
       const id = setInterval(load, 30000);
+
       return () => clearInterval(id);
-   }, []);
+   }, [debouncedSheetURL, debouncedSheetTab]);
 
 
    /**
@@ -186,6 +213,23 @@ function App() {
       <div className="page">
       <div className="app-container">
          <h1> Dragon Boat Lineup Maker</h1>
+
+
+         <div className="sheet-inputs">
+            <input
+               type="text"
+               placeholder="Google Sheets link"
+               value={sheetURL}
+               onChange={e => setSheetURL(e.target.value)}
+            />
+
+            <input
+               type="text"
+               placeholder="Sheet tab name (e.g. Roster)"
+               value={sheetTab}
+               onChange={e => setSheetTab(e.target.value)}
+            />
+         </div>
 
          <div className="boat-list">
             {boatInputs.map((boat, i) => (
