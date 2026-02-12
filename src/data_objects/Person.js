@@ -5,34 +5,42 @@ class Person {
     /**
      * Create a new Person.
      * @param {string} name - The full name of the person.
-     * @param {number} weight - The weight of the person in kilograms (or other consistent unit).
-     * @param {string} gender - The gender of the person (e.g., "male", "female", "non-binary").
-     * @param {Array<number>} [oc_400_times=[0, 0]] - Optional array representing the person's 400m times in seconds (left, right).
-     * @param {boolean} [isSteer=false] - Indicates if the person is a steerer (responsible for steering the boat).
-     * @param {boolean} [isCaller=false] - Indicates if the person is a caller (responsible for calling stroke rhythm).
+     * @param {number} [weight] - The weight of the person in kilograms.
+     * @param {string} [gender] - The gender of the person.
+     * @param {Object} [kwargs={}] - Arbitrary key-value pairs as properties.
      */
-    constructor(name, weight, gender, oc_400_times = [None, None], isSteer = false, isCaller = false) {
+    constructor(name, weight, gender = null, kwargs = {}) {
         this.name = name;
         this.weight = weight;
         this.gender = gender;
-        this.oc_400_times = oc_400_times;
-        this.isSteer = isSteer;
-        this.isCaller = isCaller;
+
+        // Assign all other key-value pairs to the instance
+        for (const [key, value] of Object.entries(kwargs)) {
+            this[key] = value;
+        }
     }
 
     /**
      * Print the person's basic information to the console.
-     * Outputs the name, weight, and gender of the person.
+     * Outputs the name and key-value pair info of person.
      */
     showPerson() {
-        console.log(`name : ${this.name}`);
-        console.log(`weight : ${this.weight}`);
-        console.log(`gender : ${this.gender}`);
+        console.log(`name: ${this.name}`);
+        // Optionally show all other properties
+        for (const key of Object.keys(this)) {
+            if (key !== "name") {
+                console.log(`${key}: ${this[key]}`);
+            }
+        }
     }
     
     toString() {
-        return `Left TT: ${this.oc_400_times[0]}\n
-            Right TT: ${this.oc_400_times[1]}`
+        // Show all properties except name
+        let props = Object.entries(this)
+            .filter(([key]) => key !== "name")
+            .map(([key, val]) => `${key}: ${val}`)
+            .join("\n");
+        return `name: ${this.name}\n${props}`;
     }
 }
 

@@ -25,26 +25,22 @@ import "./App.css";
 function App() {
 
    const [debouncedSheetURL, setDebouncedSheetURL] = useState("");
-   const [debouncedSheetTab, setDebouncedSheetTab] = useState("");
    const [sheetURL, setSheetURL] = useState("");
-   const [sheetTab, setSheetTab] = useState("");
 
    useEffect(() => {
       const id = setTimeout(() => {
          setDebouncedSheetURL(sheetURL);
-         setDebouncedSheetTab(sheetTab);
       }, 500);
 
       return () => clearTimeout(id);
-   }, [sheetURL, sheetTab]);
+   }, [sheetURL]);
 
-   const buildCSVUrl = (url, tabName) => {
-      if (!url || !tabName) return null;
+   const buildCSVUrl = (url) => {
+      if (!url) return null;
 
-      // Strip anything after /edit
-      const base = url.split("/edit")[0];
+      if (url.includes("output=csv")) return url;
+      return url.replace("/pubhtml", "/pub?output=csv");
 
-      return `${base}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
    };
    /**
     * Comparator used by SortedArray to keep the roster ordered by weight.
@@ -100,13 +96,20 @@ function App() {
             let next = new Roster([], compareByWeight);
 
             results.data.forEach(row => {
-               if (!row.name) return;
+               if (!row.Name || !row.Weight) return;
+
+               const name = row.name ?? row.Name;
+               const weight = parseFloat(row.weight ?? row.Weight);
+               const gender = row.gender ?? row.Gender;
+
+               const { name: _, weight: __, gender: ___, ...kwargs} = row
+
 
                next = next.add(new Person(
-                  row.name,
-                  parseFloat(row.weight),
-                  row.gender,
-                  [row["TT(L)"], row["TT(R)"]]
+                  name,
+                  weight,
+                  gender,
+                  kwargs
                ));
             });
 
@@ -121,7 +124,7 @@ function App() {
     * Runs once on mount and refreshes every 30 seconds.
     */
    useEffect(() => {
-      const csvURL = buildCSVUrl(debouncedSheetURL, debouncedSheetTab);
+      const csvURL = buildCSVUrl(debouncedSheetURL);
       if (!csvURL) return;
 
       const load = () => populateRosterFromGoogleSheet(csvURL);
@@ -130,7 +133,7 @@ function App() {
       const id = setInterval(load, 30000);
 
       return () => clearInterval(id);
-   }, [debouncedSheetURL, debouncedSheetTab]);
+   }, [debouncedSheetURL]);
 
 
    /**
@@ -220,13 +223,6 @@ function App() {
                placeholder="Google Sheets link"
                value={sheetURL}
                onChange={e => setSheetURL(e.target.value)}
-            />
-
-            <input
-               type="text"
-               placeholder="Sheet tab name (e.g. Roster)"
-               value={sheetTab}
-               onChange={e => setSheetTab(e.target.value)}
             />
          </div>
 
