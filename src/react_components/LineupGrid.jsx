@@ -18,58 +18,70 @@ import PersonCell from "./PersonCell.jsx";
  * @returns {JSX.Element} The rendered lineup grid component.
  */
 export default function LineupGrid({
-  title,
-  grid,
-  gridMeta,
-  dragHandler,
-  onCellClick,
-  selected,
+   title,
+   grid,
+   gridMeta,
+   dragHandler,
+   onCellClick,
+   selected,
 }) {
-  return (
-    <div className="lineup-grid">
-      <p>{title}</p>
+   return (
+      <div className="lineup-grid">
+         <p>{title}</p> 
 
-      {grid.map((row, i) => (
-        <div className="lineup-row" key={i}>
+         {grid.map((row, i) => {
+            // === compute visual cells before returning JSX ===
+            let visualCells;
+            if (i === 0) {
+               visualCells = [row[0]]; // first row → 1 cell (Caller)
+            } else if (i === grid.length - 1) {
+               visualCells = [row[0]]; // last row → 1 cell (Steer)
+            } else {
+               visualCells = row.slice(0, 2); // middle rows → 2 cells
+            }
 
-          {gridMeta.type === "heat" && (
-            i === 0 ? (
-               <div className = "lineup-label">Caller</div>
-            ) : (
-              <div className = "lineup-label">L {i}</div>
-            )
-          )}
+            return (
+               <div className="lineup-row" key={i}>
+                  {/* Labels */}
+                  {gridMeta.type === "heat" && (
+                     i === 0 ? (
+                        <div className="lineup-label">Caller</div>
+                     ) : i === grid.length - 1 ? (
+                        <div className="lineup-label">Steer</div>
+                     ) : (
+                        <div className="lineup-label">L {i}</div>
+                     )
+                  )}
 
-          {row.map((p, j) => {
-            const isSelected =
-              selected &&
-              p &&
-              selected.type === gridMeta.type &&
-              selected.row === i &&
-              selected.col === j &&
-              (gridMeta.type !== "heat" ||
-                selected.heatIdx === gridMeta.heatIdx)
+                  {/* Cells */}
+                  {visualCells.map((p, j) => {
+                     const isSelected =
+                        selected &&
+                        p &&
+                        selected.type === gridMeta.type &&
+                        selected.row === i &&
+                        selected.col === j &&
+                        (gridMeta.type !== "heat" ||
+                           selected.heatIdx === gridMeta.heatIdx);
 
-              return (
-                <PersonCell
-                  key={j}
-                  person={p}
-                  dragProps={dragHandler(gridMeta, i, j)}
-                  onClick={() => onCellClick(gridMeta, i, j, p)}
-                  selected={isSelected}
-                />
-          )})}
+                     return (
+                        <PersonCell
+                           key={j}
+                           person={p}
+                           dragProps={dragHandler(gridMeta, i, j)}
+                           onClick={() => onCellClick(gridMeta, i, j, p)}
+                           selected={isSelected}
+                        />
+                     );
+                  })}
 
-          {gridMeta.type === "heat" && (
-            i === 0 ? (
-              <div className = "lineup-label">Steer</div>
-            ) : ( 
-              <div className = "lineup-label">R {i}</div>
-            )
-          )}
-
-        </div>
-      ))}
-    </div>
-  );
+                  {/* Right-side labels for heat */}
+                  {gridMeta.type === "heat" && i !== 0 && i !== grid.length - 1 && (
+                     <div className="lineup-label">R {i}</div>
+                  )}
+               </div>
+            );
+         })}
+      </div>
+   );
 }
