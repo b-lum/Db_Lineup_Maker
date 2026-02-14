@@ -1,4 +1,5 @@
 import PersonCell from "./PersonCell.jsx";
+import LGStyles from './LineupGrid.module.css';
 
 
 /**
@@ -26,7 +27,7 @@ export default function LineupGrid({
    selected,
 }) {
    return (
-      <div className="lineup-grid">
+      <div className={LGStyles.grid}>
          <p>{title}</p> 
 
          {grid.map((row, i) => {
@@ -41,15 +42,15 @@ export default function LineupGrid({
             }
 
             return (
-               <div className="lineup-row" key={i}>
+               <div className={LGStyles.row} key={i}>
                   {/* Labels */}
                   {gridMeta.type === "heat" && (
                      i === 0 ? (
-                        <div className="lineup-label">Caller</div>
+                        <div className={LGStyles.label}>Caller</div>
                      ) : i === grid.length - 1 ? (
-                        <div className="lineup-label">Steer</div>
+                        <div className={LGStyles.label}>Steer</div>
                      ) : (
-                        <div className="lineup-label">L {i}</div>
+                        <div className={LGStyles.label}>L {i}</div>
                      )
                   )}
 
@@ -77,7 +78,7 @@ export default function LineupGrid({
 
                   {/* Right-side labels for heat */}
                   {gridMeta.type === "heat" && i !== 0 && i !== grid.length - 1 && (
-                     <div className="lineup-label">R {i}</div>
+                     <div className={LGStyles.label}>R {i}</div>
                   )}
                </div>
             );

@@ -1,4 +1,4 @@
-import "../App.css";
+import BHDStyle from "./BoatHeatsDisplay.module.css"
 import { useState } from "react";
 import LineupGrid from "./LineupGrid.jsx";
 
@@ -135,9 +135,9 @@ export default function BoatHeatsDisplay({
   };
 
   return (
-    <div className="boat-heats">
+    <div className={BHDStyle.heatsContainer}>
 
-      <div className="scroll-container">
+      <div className={BHDStyle.scrollContainer}>
         <div className="item people-item">
           <LineupGrid
             title="Roster"
@@ -150,7 +150,7 @@ export default function BoatHeatsDisplay({
         </div>
       </div>
       
-      <div className="lineup-container">
+      <div className={BHDStyle.lineupContainer}>
         {Array.from(heats.lineups.entries()).map(([idx, lineup]) => (
           <div className="item" key={idx}>
             <LineupGrid
@@ -161,13 +161,13 @@ export default function BoatHeatsDisplay({
               onCellClick={handleCellClick}
               selected={selected}
             />
-            <div className="lineup-row weight-row">
-              <div className="lineup-label" />
+            <div className={BHDStyle.weightow}>
+              <div className={BHDStyle.weightLabel}/>
               <div>
                 {`${lineup.leftWeight} lbs`}
               </div>
 
-              <div className="lineup-label" />
+              <div className={BHDStyle.weightLabel}/>
               <div>
                 {`${lineup.rightWeight} lbs`}
               </div>

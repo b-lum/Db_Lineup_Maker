@@ -1,0 +1,17 @@
+.table {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns: Person | Count */
+  gap: 8px;
+  max-width: 300px;
+}
+
+.header {
+  font-weight: bold;
+  border-bottom: 1px solid #aaa;
+  padding: 4px;
+}
+
+.cell {
+  padding: 4px;
+  border-bottom: 1px solid #eee;
+}

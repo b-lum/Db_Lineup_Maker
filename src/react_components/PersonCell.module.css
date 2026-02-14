@@ -1,0 +1,37 @@
+.name {
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: -20px;
+  display: inline-block;
+  color: #ffffff;
+}
+
+.cell {
+  padding: 10px;
+  width: 80px;
+  height: 40px;
+  border: 1px solid #9cd4ff;
+  text-align: center;
+  background-color: #137297;
+  border-radius: 5px;
+  font-weight: bold;
+  user-select: none;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.cell.selected {
+  outline: 2px solid #4caf50;
+  background-color: rgba(76, 175, 80, 0.15);
+}
+
+/* Highlight cell being dragged */
+.cell.dragging {
+  opacity: 1.0;
+  background-color: #073356;
+}
+
+/* Highlight drop target */
+.cell.hovered {
+  background-color: #ffcc80;
+}

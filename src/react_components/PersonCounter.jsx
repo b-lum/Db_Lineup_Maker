@@ -1,18 +1,18 @@
 import React from "react";
-import "../App.css";
+import PCStyle from "./PersonCounter.module.css";
 
 export default function PersonCounter({ personCounts }) {
    const entries = Array.from(personCounts.entries());
 
    return (
-      <div className="count-table">
-         <div className="grid-header">Person</div>
-         <div className="grid-header">Count</div>
+      <div className={PCStyle.table}>
+         <div className={PCStyle.header}>Person</div>
+         <div className={PCStyle.header}>Count</div>
 
          {entries.map(([name, count]) => (
             <React.Fragment key={name}>
-               <div className="grid-cell">{name}</div>
-               <div className="grid-cell">{count}</div>
+               <div className={PCStyle.cell}>{name}</div>
+               <div className={PCStyle.cell}>{count}</div>
             </React.Fragment>
          ))}
       </div>

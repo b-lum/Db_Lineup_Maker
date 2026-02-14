@@ -1,0 +1,19 @@
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  margin-top: 20px;
+  width: max-content;
+}
+
+.row {
+  display: flex;
+  align-items: center; 
+  flex: nowrap;
+  /*grid-template-columns: repeat(2, 1fr); */
+}
+
+.label {
+  width: 40px;
+  text-align: center;
+}

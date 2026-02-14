@@ -214,7 +214,7 @@ function App() {
    return (
       <div className="page">
       <div className="app-container">
-         <h1> Dragon Boat Lineup Maker</h1>
+         <h1> DB Lineups</h1>
 
 
          <div className="sheet-inputs">

@@ -1,3 +1,4 @@
+import PCStyle from "./PersonCell.module.css"
 /**
  * React component that renders a single cell in a lineup grid.
  * Displays the person's name and weight if a person exists, or "empty" otherwise.
@@ -12,26 +13,26 @@
  * @returns {JSX.Element} The rendered lineup cell component.
  */
 export default function PersonCell({ 
-  person,
-  dragProps,
-  onClick,
-  selected = false,
+   person,
+   dragProps,
+   onClick,
+   selected = false,
 }) {
-    return (
-      <div 
-      className={`lineup-cell ${selected ? "selected" : ""}`}
-      draggable={!!person}
-      onClick={onClick}
-      {...dragProps}
-      >
-        {person ? (
-          <>
-            <span className="person-name">{person.name}</span><br />
-            {person.weight} lbs
-          </>
-        ) : (
-          "empty"
-        )}
-      </div>
-    );
-  }
+     return (
+       <div 
+        className={`${PCStyle.cell} ${selected ? PCStyle.selected : ""}`}
+       draggable={!!person}
+       onClick={onClick}
+       {...dragProps}
+       >
+         {person ? (
+           <>
+             <span className={PCStyle.name}>{person.name}</span><br />
+             {person.weight} lbs
+           </>
+         ) : (
+           "empty"
+         )}
+       </div>
+     );
+}
