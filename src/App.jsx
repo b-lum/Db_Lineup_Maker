@@ -91,7 +91,6 @@ function App() {
 
       Papa.parse(csvURL, {
          header: true,
-         comments: '#',
          download: true,
          complete: (results) => {
             let next = new Roster([], compareByWeight);
