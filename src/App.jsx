@@ -93,10 +93,9 @@ function App() {
          header: true,
          download: true,
          complete: (results) => {
-            const data = results.data.slice(1);
             let next = new Roster([], compareByWeight);
 
-            data.forEach(row => {
+            results.data.forEach(row => {
                if (!row.Name || !row.Weight) return;
 
                const name = row.name ?? row.Name;
