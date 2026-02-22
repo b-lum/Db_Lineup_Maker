@@ -91,12 +91,12 @@ function App() {
 
       Papa.parse(csvURL, {
          header: true,
-         comments: '#',
          download: true,
          complete: (results) => {
+            const data = results.data.slice(1);
             let next = new Roster([], compareByWeight);
 
-            results.data.forEach(row => {
+            data.forEach(row => {
                if (!row.Name || !row.Weight) return;
 
                const name = row.name ?? row.Name;
