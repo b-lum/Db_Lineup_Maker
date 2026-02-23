@@ -40,18 +40,20 @@ export default function LineupGrid({
             } else {
                visualCells = row.slice(0, 2); // middle rows → 2 cells
             }
-
+            let positionText = "";
+            if (gridMeta.type === "heat") {
+               if (i === 0) positionText = "C";
+               else if (i === grid.length - 1) positionText = "S";
+               else positionText = positionText = i;
+               }
+            
             return (
                <div className={LGStyles.row} key={i}>
                   {/* Labels */}
                   {gridMeta.type === "heat" && (
-                     i === 0 ? (
-                        <div className={LGStyles.label}>Caller</div>
-                     ) : i === grid.length - 1 ? (
-                        <div className={LGStyles.label}>Steer</div>
-                     ) : (
-                        <div className={LGStyles.label}>L {i}</div>
-                     )
+                     <div className={LGStyles.label}>
+                        {row[0] ? row[0].weight : 0}
+                     </div>
                   )}
 
                   {/* Cells */}
@@ -69,16 +71,24 @@ export default function LineupGrid({
                         <PersonCell
                            key={j}
                            person={p}
+                           variant="lineup"
                            dragProps={dragHandler(gridMeta, i, j)}
                            onClick={() => onCellClick(gridMeta, i, j, p)}
                            selected={isSelected}
                         />
                      );
                   })}
-
+                  
                   {/* Right-side labels for heat */}
-                  {gridMeta.type === "heat" && i !== 0 && i !== grid.length - 1 && (
-                     <div className={LGStyles.label}>R {i}</div>
+                  {gridMeta.type === "heat" && (
+                     
+                     <div className={LGStyles.label}>
+                        {row[1]
+                           ? row[1].weight
+                           : 1 <= i && i <= 10
+                              ? 0
+                              : ""}
+                     </div>
                   )}
                </div>
             );

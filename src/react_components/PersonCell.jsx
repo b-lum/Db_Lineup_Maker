@@ -14,25 +14,34 @@ import PCStyle from "./PersonCell.module.css"
  */
 export default function PersonCell({ 
    person,
+   variant = "default",
    dragProps,
    onClick,
    selected = false,
 }) {
      return (
        <div 
-        className={`${PCStyle.cell} ${selected ? PCStyle.selected : ""}`}
-       draggable={!!person}
-       onClick={onClick}
+         className={`${PCStyle.cell} ${selected ? PCStyle.selected : ""}`}
+         draggable={!!person}
+         onClick={onClick}
        {...dragProps}
        >
-         {person ? (
-           <>
-             <span className={PCStyle.name}>{person.name}</span><br />
-             {person.weight} lbs
-           </>
-         ) : (
-           "empty"
-         )}
+        {!person && "empty"}
+
+        {person && variant === "roster" && (
+          <>
+            <span className={PCStyle.name}>{person.name}</span>
+            {"  "}
+            {person.weight}
+          </>
+        )}
+
+        {person && variant === "lineup" && (
+          <span className={PCStyle.name}>
+            {person.name}
+          </span>
+        )}
+
        </div>
      );
 }

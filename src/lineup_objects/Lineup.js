@@ -13,10 +13,13 @@ class Lineup {
     * and total left and right side weights.
     */
    constructor() {
-      const rows = 11
-      const cols = 2
       this.peopleMap = new Map();
-      this.grid = Array.from({length : rows}, () => Array(cols).fill(null));
+      
+      this.grid = [
+         [null],             // Row 0 → Caller
+         ...Array.from({length: 10}, () => [null, null]), // Rows 1–10 → 2 people
+         [null]              // Row 11 → Steer
+      ];
       this.leftWeight = 0
       this.rightWeight = 0
    }
@@ -38,7 +41,7 @@ class Lineup {
       }
 
       // Bounds check
-      if (row < 0 || row >= this.grid.length || col < 0 || col >= this.grid[0].length) {
+      if (row < 0 || row >= this.grid.length || col < 0 || col >= this.grid[row].length) {
          throw new Error("Invalid row or column");
       }
 
@@ -46,8 +49,8 @@ class Lineup {
       this.grid[row][col] = person;
       this.peopleMap.set(person.name, person);
 
-      // Update weights if not in first row
-      if (row !== 0) {
+      // Update weights if not first or last row
+      if (row >= 1 && row <= 10) {
          if (col === 0) this.leftWeight += person.weight;
          else if (col === 1) this.rightWeight += person.weight;
       }
@@ -63,19 +66,25 @@ class Lineup {
     * @param {number} col - The column index (0 for left, 1 for right) of the person to remove.
     */
    removePerson(row, col) {
-      let p = this.grid[row][col];
-      
-      if (p !== null) {
-         if (col === 0 && row !== 0) this.leftWeight -= p.weight;
-         else if (col === 1 && row !== 0) this.rightWeight -= p.weight;
-
-         this.grid[row][col] = null
-         this.peopleMap.delete(p.name);
-      
-         console.log(`Removed ${p.name} from row ${row}, column ${col}`);
-      } else {
-         console.log(`No person to remove at row ${row}, column ${col}`);
+      // Bounds check
+      if (row < 0 || row >= this.grid.length || col < 0 || col >= this.grid[row].length) {
+        throw new Error(`Invalid row or column for jagged grid: row ${row}, col ${col}`);
       }
+
+      const p = this.grid[row][col];
+      if (!p) {
+         console.log(`No person to remove at row ${row}, column ${col}`);
+         return;
+      }
+
+      if (row >= 1 && row <= 10) {
+         if (col === 0) this.leftWeight -= p.weight;
+         else this.rightWeight -= p.weight;
+      }
+
+      this.grid[row][col] = null;
+      this.peopleMap.delete(p.name);
+      console.log(`Removed ${p.name} from row ${row}, column ${col}`);
    }
 
    /**
@@ -89,13 +98,13 @@ class Lineup {
     */
    swapPerson(row1, col1, row2, col2) {
       // Bounds check
-      if (row1 < 0 || row1 >= this.grid.length || col1 < 0 || col1 >= this.grid[0].length ||
-         row2 < 0 || row2 >= this.grid.length || col2 < 0 || col2 >= this.grid[0].length) {
+      if (row1 < 0 || row1 >= this.grid.length || col1 < 0 || col1 >= this.grid[row1].length ||
+         row2 < 0 || row2 >= this.grid.length || col2 < 0 || col2 >= this.grid[row2].length) {
          throw new Error("Invalid row or column");
       }
 
-      let p1 = this.grid[row1][col1];
-      let p2 = this.grid[row2][col2];
+      const p1 = this.grid[row1][col1];
+      const p2 = this.grid[row2][col2];
 
       // Update weights: remove old weights if row != 0
       //if (row1 !== 0 && col1 === 0 && p1) this.leftWeight -= p1.weight;
@@ -165,7 +174,7 @@ class Lineup {
         rows.push(`${i}\t${left}\t${right}`);
       }
 
-      const lastRow = this.grid[0][1]?.name ?? "";
+      const lastRow = this.grid[11][0]?.name ?? "";
       rows.push(`Steer\t\t${lastRow}`)
       return rows;
    }
