@@ -25,6 +25,9 @@ export default function LineupGrid({
    dragHandler,
    onCellClick,
    selected,
+   allPeople,
+   selectedNames,
+   onReplace,
 }) {
    return (
       <div className={LGStyles.grid}>
@@ -85,6 +88,11 @@ export default function LineupGrid({
                            dragProps={dragHandler(gridMeta, i, j)}
                            onClick={() => onCellClick(gridMeta, i, j, p)}
                            selected={isSelected}
+                           allPeople={allPeople}
+                           selectedNames={selectedNames}
+                           onReplace={(newPerson) =>
+                              onReplace(gridMeta, i, j, newPerson)
+                           }
                         />
                      );
                   })}

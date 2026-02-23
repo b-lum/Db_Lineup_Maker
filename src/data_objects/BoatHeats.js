@@ -127,6 +127,26 @@ class BoatHeats {
    }
 
    /**
+    * Replace a person at a specific heat / row / col.
+    * Removes existing person in that cell and inserts new one.
+    *
+    * @param {number} heatIdx
+    * @param {number} row
+    * @param {number} col
+    * @param {Object|null} person
+   */
+   replacePerson(heatIdx, row, col, person) {
+      const lineup = this.lineups.get(heatIdx);
+      if (!lineup) return;
+
+      lineup.removePerson(row, col);
+
+      if (person) {
+         lineup.addPerson(row, col, person);
+      }
+   }
+
+   /**
     * Create a shallow clone of the current BoatHeats instance.
     * Each lineup is also cloned to produce independent lineups.
     * @returns {BoatHeats} A new BoatHeats instance with cloned lineups.

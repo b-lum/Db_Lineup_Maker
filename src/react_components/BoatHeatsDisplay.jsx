@@ -44,6 +44,26 @@ export default function BoatHeatsDisplay({
 
   }
 
+  const replacePerson = (meta, row, col, newPerson) => {
+    const next = heats.clone();
+
+    console.log("Replacing at:", meta, row, col, newPerson);
+    
+    if (meta.type !== "heat") return;
+
+    next.replacePerson(meta.heatIdx, row, col, newPerson);
+
+    onUpdate(next);
+  };
+
+  const selectedNames = new Set();
+
+  for (const lineup of heats.lineups.values()) {
+    for (const person of lineup.peopleMap.values()) {
+      selectedNames.add(person.name);
+    }
+  }
+
   /**
    * Generate drag-and-drop event handlers for a person cell.
    * @param {Object} meta - Metadata for the grid type and heat index.
@@ -160,6 +180,9 @@ export default function BoatHeatsDisplay({
               dragHandler={dragHandler}
               onCellClick={handleCellClick}
               selected={selected}
+              allPeople={roster.getAll()}
+              selectedNames={selectedNames}
+              onReplace={replacePerson}
             />
             <div className={BHDStyle.weightRow}>
               <div>{`${lineup.leftWeight} lbs`}</div>
