@@ -1,6 +1,7 @@
 import BHDStyle from "./BoatHeatsDisplay.module.css"
 import { useState } from "react";
 import LineupGrid from "./LineupGrid.jsx";
+import Roster from "./Roster.jsx";
 
 
 /**
@@ -118,34 +119,19 @@ export default function BoatHeatsDisplay({
       setSelected(null);
     }
   };
-  
 
-  /**
-   * Convert a sorted array (roster) into a 2D grid with 2 columns for display.
-   * @param {import("../lineup_objects/SortedArray").SortedArray} sorted - SortedArray of Person objects.
-   * @returns {Array<Array<Object|null>>} 2D array representing rows and columns of people.
-   */
-  const getPeopleGrid = sorted => {
-    const people = sorted.toArray();
-    const cols = 2;
-    const rows = Math.ceil(people.length / cols);
-    return Array.from({ length: rows }, (_, r) =>
-      Array.from({ length: cols }, (_, c) => people[r * cols + c] ?? null)
-    );
-  };
 
   return (
     <div className={BHDStyle.heatsContainer}>
 
       <div className={BHDStyle.scrollContainer}>
         <div className="item people-item">
-          <LineupGrid
+          <Roster
             title="Roster"
-            grid={getPeopleGrid(roster)}
-            gridMeta={{ type: "sorted" }}
+            people={roster.getAll()}  // pass 1D array
             dragHandler={dragHandler}
             onCellClick={handleCellClick}
-            selected={selected}  
+            selected={selected}
           />
         </div>
       </div>

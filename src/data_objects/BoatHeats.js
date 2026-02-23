@@ -102,8 +102,8 @@ class BoatHeats {
       
       // ROSTER TO HEAT
       if (from.type === "sorted" && to.type === "heat") {
-         const peopleArray = roster.toArray();
-         const index = from.row * 2 + from.col;
+         const peopleArray = roster.getAll();
+         const index = from.row;
          const person = peopleArray[index];
          if (!person) return;
       

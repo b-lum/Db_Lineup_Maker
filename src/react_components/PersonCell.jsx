@@ -31,8 +31,6 @@ export default function PersonCell({
         {person && variant === "roster" && (
           <>
             <span className={PCStyle.name}>{person.name}</span>
-            {"  "}
-            {person.weight}
           </>
         )}
 

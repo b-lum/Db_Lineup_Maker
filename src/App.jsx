@@ -52,7 +52,7 @@ function App() {
     * Stored as a SortedArray<Person>, ordered by weight.
     */
    const [roster, setRoster] = useState(
-      () => new Roster([], compareByWeight)
+      () => new Roster([])
    );
 
    /**
@@ -94,7 +94,6 @@ function App() {
          download: true,
          complete: (results) => {
             let next = new Roster([], compareByWeight);
-
             results.data.forEach(row => {
                if (!row.Name || !row.Weight) return;
 
@@ -105,7 +104,7 @@ function App() {
                const { name: _, weight: __, gender: ___, ...kwargs} = row
 
 
-               next = next.add(new Person(
+               next = next.addPerson(new Person(
                   name,
                   weight,
                   gender,
@@ -214,7 +213,6 @@ function App() {
    return (
       <div className="page">
       <div className="app-container">
-         <h1> DB Lineups</h1>
 
 
          <div className="sheet-inputs">
