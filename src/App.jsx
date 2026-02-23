@@ -54,6 +54,19 @@ function App() {
    const [roster, setRoster] = useState(
       () => new Roster([])
    );
+   const [searchTerm, setSearchTerm] = useState("");
+   const [filteredPeople, setFilteredPeople] = useState(roster.getAll());
+
+   
+   useEffect(() => {
+      const peopleArray = roster.getAll();
+
+      if (!searchTerm) {
+         setFilteredPeople(peopleArray);
+      } else {
+         setFilteredPeople(roster.filterByName(searchTerm));
+      }
+   }, [searchTerm, roster]);
 
    /**
     * Map of boat name -> BoatHeats instance.
@@ -256,6 +269,9 @@ function App() {
                ))}
             </div>
          <div className="heat-count-grid">
+            <div className="person-count-display">
+               <PersonCounter personCounts={personCounts} />
+            </div>
             <div className="heat-display">
                {activeBoat && boats.has(activeBoat) && (
                   <BoatHeatsDisplay
@@ -266,12 +282,12 @@ function App() {
                         next.set(activeBoat, newHeats);
                         setBoats(next);
                      }}
+                     filteredPeople={filteredPeople}
+                     setFilteredPeople= {setFilteredPeople}
+                     searchTerm={searchTerm}
+                     setSearchTerm={setSearchTerm}
                   />
                )}
-            </div>
-
-            <div className="person-count-display">
-               <PersonCounter personCounts={personCounts} />
             </div>
          </div>
 

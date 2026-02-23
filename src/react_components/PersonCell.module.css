@@ -2,10 +2,12 @@
   font-weight: bold;
   font-size: 18px;
   display: inline-block;
-  color: #ffffff;
+  color: #1a1a1a;
 }
 
 .cell {
+  position: relative;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -14,9 +16,9 @@
   padding: 10px;
   width: 100px;
   height: 10px;            
-  border: 1px solid #9cd4ff;
-  background-color: #137297;
-  border-radius: 5px;
+  border: 1px solid #080a0b;
+  background-color: #f6f8f9;
+  border-radius: 0px;
   user-select: none;
   transition: background-color 0.2s;
   cursor: pointer;
@@ -36,4 +38,15 @@
 /* Highlight drop target */
 .cell.hovered {
   background-color: #ffcc80;
+}
+
+.positionBadge {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  font-size: 9px;
+  font-weight: bold;
+  color: #1a1a1a;
+  pointer-events: none; 
+  opacity: 0.6;
 }

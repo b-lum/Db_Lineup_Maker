@@ -28,8 +28,8 @@ export default function LineupGrid({
 }) {
    return (
       <div className={LGStyles.grid}>
-         <p>{title}</p> 
-
+         <div className={LGStyles.title}>{title}</div>
+         
          {grid.map((row, i) => {
             // === compute visual cells before returning JSX ===
             let visualCells;
@@ -40,15 +40,12 @@ export default function LineupGrid({
             } else {
                visualCells = row.slice(0, 2); // middle rows → 2 cells
             }
-            let positionText = "";
-            if (gridMeta.type === "heat") {
-               if (i === 0) positionText = "C";
-               else if (i === grid.length - 1) positionText = "S";
-               else positionText = positionText = i;
-               }
             
             return (
-               <div className={LGStyles.row} key={i}>
+               <div
+                  className={`${LGStyles.row} ${visualCells.length === 1 ? LGStyles.single : ""}`}
+                  key={i}
+               >
                   {/* Labels */}
                   {gridMeta.type === "heat" && (
                      <div className={LGStyles.label}>
@@ -67,10 +64,23 @@ export default function LineupGrid({
                         (gridMeta.type !== "heat" ||
                            selected.heatIdx === gridMeta.heatIdx);
 
+                     let positionText = "";
+                     if (gridMeta.type === "heat") {
+                        if (i === 0) {
+                           positionText = "C";
+                        } else if (i === grid.length - 1) {
+                           positionText = "S";
+                        } else {
+                           const side = j === 0 ? "L" : "R";
+                           positionText = `${i}${side}`;
+                        }
+                     }
+
                      return (
                         <PersonCell
                            key={j}
                            person={p}
+                           position={positionText}
                            variant="lineup"
                            dragProps={dragHandler(gridMeta, i, j)}
                            onClick={() => onCellClick(gridMeta, i, j, p)}

@@ -20,6 +20,10 @@ export default function BoatHeatsDisplay({
   heats,
   roster,
   onUpdate,
+  filteredPeople,
+  setFilteredPeople,
+  searchTerm,
+  setSearchTerm,
 }) {
 
   const [selected, setSelected] = useState(null);
@@ -123,18 +127,6 @@ export default function BoatHeatsDisplay({
 
   return (
     <div className={BHDStyle.heatsContainer}>
-
-      <div className={BHDStyle.scrollContainer}>
-        <div className="item people-item">
-          <Roster
-            title="Roster"
-            people={roster.getAll()}  // pass 1D array
-            dragHandler={dragHandler}
-            onCellClick={handleCellClick}
-            selected={selected}
-          />
-        </div>
-      </div>
       
       <div className={BHDStyle.lineupContainer}>
         {Array.from(heats.lineups.entries()).map(([idx, lineup]) => (
@@ -147,20 +139,34 @@ export default function BoatHeatsDisplay({
               onCellClick={handleCellClick}
               selected={selected}
             />
-            <div className={BHDStyle.weightow}>
-              <div className={BHDStyle.weightLabel}/>
-              <div>
-                {`${lineup.leftWeight} lbs`}
-              </div>
-
-              <div className={BHDStyle.weightLabel}/>
-              <div>
-                {`${lineup.rightWeight} lbs`}
-              </div>
-
+            <div className={BHDStyle.weightRow}>
+              <div>{`${lineup.leftWeight} lbs`}</div>
+              <div>{`${lineup.rightWeight} lbs`}</div>
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="scrollContainerWrapper">
+        <div className={BHDStyle.scrollContainer}>
+          <input
+            type="text"
+            placeholder="Search by name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{ marginBottom: "8px", padding: "6px", width: "90%" }}
+          />
+
+          <div className="item people-item">
+            <Roster
+              title="Roster"
+              people={filteredPeople}  // pass 1D array
+              dragHandler={dragHandler}
+              onCellClick={handleCellClick}
+              selected={selected}
+            />
+          </div>
+        </div>
       </div>
 
 

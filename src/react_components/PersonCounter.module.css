@@ -7,11 +7,13 @@
 
 .header {
   font-weight: bold;
-  border-bottom: 1px solid #aaa;
+  color: #1a1a1a;
+  border-bottom: 1px solid #1a1a1a;
   padding: 4px;
 }
 
 .cell {
   padding: 4px;
-  border-bottom: 1px solid #eee;
+  color: #1a1a1a;
+  border-bottom: 1px solid #1a1a1a;
 }

@@ -30,6 +30,11 @@ export class Roster {
   getAll() {
     return [...this.people];
   }
+
+  filterByName(term) {
+   const lower = term.toLowerCase();
+   return this.people.filter(p => p.name.toLowerCase().includes(lower));
+}
 }
 
 // helper for sortBy

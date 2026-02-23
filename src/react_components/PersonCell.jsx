@@ -15,6 +15,7 @@ import PCStyle from "./PersonCell.module.css"
 export default function PersonCell({ 
    person,
    variant = "default",
+   position,
    dragProps,
    onClick,
    selected = false,
@@ -26,7 +27,15 @@ export default function PersonCell({
          onClick={onClick}
        {...dragProps}
        >
-        {!person && "empty"}
+        {position && (
+          <div className={PCStyle.positionBadge}>
+            {position}
+          </div>
+        )}
+
+        {!person && (
+          <span className={PCStyle.name}></span>
+        )}
 
         {person && variant === "roster" && (
           <>
