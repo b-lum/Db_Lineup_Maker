@@ -269,9 +269,6 @@ function App() {
                ))}
             </div>
          <div className="heat-count-grid">
-            <div className="person-count-display">
-               <PersonCounter personCounts={personCounts} />
-            </div>
             <div className="heat-display">
                {activeBoat && boats.has(activeBoat) && (
                   <BoatHeatsDisplay
@@ -288,6 +285,9 @@ function App() {
                      setSearchTerm={setSearchTerm}
                   />
                )}
+            </div>
+            <div className="person-count-display">
+               <PersonCounter personCounts={personCounts} />
             </div>
          </div>
 

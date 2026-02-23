@@ -128,25 +128,6 @@ export default function BoatHeatsDisplay({
   return (
     <div className={BHDStyle.heatsContainer}>
       
-      <div className={BHDStyle.lineupContainer}>
-        {Array.from(heats.lineups.entries()).map(([idx, lineup]) => (
-          <div className="item" key={idx}>
-            <LineupGrid
-              title={`Heat ${idx + 1}`}
-              grid={lineup.grid}
-              gridMeta={{ type: "heat", heatIdx: idx }}
-              dragHandler={dragHandler}
-              onCellClick={handleCellClick}
-              selected={selected}
-            />
-            <div className={BHDStyle.weightRow}>
-              <div>{`${lineup.leftWeight} lbs`}</div>
-              <div>{`${lineup.rightWeight} lbs`}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-
       <div className="scrollContainerWrapper">
         <div className={BHDStyle.scrollContainer}>
           <input
@@ -167,6 +148,25 @@ export default function BoatHeatsDisplay({
             />
           </div>
         </div>
+      </div>
+
+      <div className={BHDStyle.lineupContainer}>
+        {Array.from(heats.lineups.entries()).map(([idx, lineup]) => (
+          <div className="item" key={idx}>
+            <LineupGrid
+              title={`Heat ${idx + 1}`}
+              grid={lineup.grid}
+              gridMeta={{ type: "heat", heatIdx: idx }}
+              dragHandler={dragHandler}
+              onCellClick={handleCellClick}
+              selected={selected}
+            />
+            <div className={BHDStyle.weightRow}>
+              <div>{`${lineup.leftWeight} lbs`}</div>
+              <div>{`${lineup.rightWeight} lbs`}</div>
+            </div>
+          </div>
+        ))}
       </div>
 
 

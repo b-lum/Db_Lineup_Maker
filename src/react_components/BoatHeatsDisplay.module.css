@@ -9,11 +9,13 @@
 }
 
 .scrollContainer {
-  max-height: 1000px;
+  max-height: 700px;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 10px;
+  width: 165px;
 
+  direction: rtl;
   
   /* Always reserve space for scrollbar to prevent shifting */
   scrollbar-gutter: stable;
