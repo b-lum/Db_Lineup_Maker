@@ -1,23 +1,23 @@
-import BHDStyle from "./BoatHeatsDisplay.module.css"
+import RLDStyle from "./RaceLayoutDisplay.module.css"
 import { useState } from "react";
 import LineupGrid from "./LineupGrid.jsx";
 import Roster from "./Roster.jsx";
 
 
 /**
- * React component that renders heats for a boat, including lineups for each heat
+ * React component that renders lineupgrids for a boat, including lineups for each heat
  * and a roster of unscheduled participants. Supports drag-and-drop to move or swap
- * participants between heats and roster.
+ * participants between lineupgrids and roster.
  *
  * @param {Object} props - Component props.
- * @param {import("../lineup_objects/BoatHeats").BoatHeats} props.heats - The BoatHeats object containing all lineups for this boat.
+ * @param {import("../lineup_objects/RaceLayout").RaceLayout} props.lineupgrids - The RaceLayout object containing all lineups for this boat.
  * @param {import("../lineup_objects/SortedArray").SortedArray} props.roster - A sorted array of all available people for assignment.
- * @param {function} props.onUpdate - Callback function called when the heats object is updated.
+ * @param {function} props.onUpdate - Callback function called when the lineupgrids object is updated.
  *
- * @returns {JSX.Element} The rendered BoatHeats component.
+ * @returns {JSX.Element} The rendered RaceLayout component.
  */
-export default function BoatHeatsDisplay({
-  heats,
+export default function RaceLayoutDisplay({
+  lineupgrids,
   roster,
   onUpdate,
   filteredPeople,
@@ -30,14 +30,14 @@ export default function BoatHeatsDisplay({
   // selected = { type, heatIdx?, row, col, person }
 
   /**
-   * Move or swap a person between heats or between heat and roster.
-   * Clones the heats object, applies the move, and triggers onUpdate.
+   * Move or swap a person between lineupgrids or between lineupgrid and roster.
+   * Clones the lineupgrids object, applies the move, and triggers onUpdate.
    * @param {Object} param0 - Object containing from and to positions.
    * @param {Object} param0.from - Source position.
    * @param {Object} param0.to - Destination position.
    */
   const movePerson = ({ from, to }) => {
-    const next = heats.clone();
+    const next = lineupgrids.clone();
     next.movePerson({ from, to }, roster);
     onUpdate(next);
     console.log("movePerson", from, to);
@@ -45,12 +45,10 @@ export default function BoatHeatsDisplay({
   }
 
   const replacePerson = (meta, row, col, newPerson) => {
-    const next = heats.clone();
+    const next = lineupgrids.clone();
 
-    console.log("Replacing at:", meta, row, col, newPerson);
-    
+    console.log("Replacing at:", meta, row, col, newPerson);    
     if (meta.type !== "heat") return;
-
     next.replacePerson(meta.heatIdx, row, col, newPerson);
 
     onUpdate(next);
@@ -58,11 +56,20 @@ export default function BoatHeatsDisplay({
 
   const selectedNames = new Set();
 
-  for (const lineup of heats.lineups.values()) {
+  for (const lineup of lineupgrids.lineups.values()) {
     for (const person of lineup.peopleMap.values()) {
       selectedNames.add(person.name);
     }
   }
+
+  const handleAutoFill = (heatIdx) => {
+    const next = lineupgrids.clone();
+    const lineup = next.lineups.get(heatIdx);
+    const balanced = lineup.fill(roster);
+
+    next.lineups.set(heatIdx, balanced);
+
+    onUpdate(next);};
 
   /**
    * Generate drag-and-drop event handlers for a person cell.
@@ -119,7 +126,7 @@ export default function BoatHeatsDisplay({
 
     // === MOVE ===
     if (selected) {
-      const next = heats.clone();
+      const next = lineupgrids.clone();
 
       next.movePerson(
         {
@@ -146,10 +153,10 @@ export default function BoatHeatsDisplay({
 
 
   return (
-    <div className={BHDStyle.heatsContainer}>
+    <div className={RLDStyle.lineupGridContainer}>
       
       <div className="scrollContainerWrapper">
-        <div className={BHDStyle.scrollContainer}>
+        <div className={RLDStyle.scrollContainer}>
           <input
             type="text"
             placeholder="Search by name..."
@@ -170,8 +177,8 @@ export default function BoatHeatsDisplay({
         </div>
       </div>
 
-      <div className={BHDStyle.lineupContainer}>
-        {Array.from(heats.lineups.entries()).map(([idx, lineup]) => (
+      <div className={RLDStyle.lineupContainer}>
+        {Array.from(lineupgrids.lineups.entries()).map(([idx, lineup]) => (
           <div className="item" key={idx}>
             <LineupGrid
               title={`Heat ${idx + 1}`}
@@ -184,10 +191,14 @@ export default function BoatHeatsDisplay({
               selectedNames={selectedNames}
               onReplace={replacePerson}
             />
-            <div className={BHDStyle.weightRow}>
-              <div>{`${lineup.leftWeight} lbs`}</div>
-              <div>{`${lineup.rightWeight} lbs`}</div>
+            <div className={RLDStyle.weightRow}>
+              <div>{`${lineup.leftWeight}`}</div>
+              <div>{`${lineup.rightWeight - lineup.leftWeight}`}</div>
+              <div>{`${lineup.rightWeight}`}</div>
             </div>
+            <button onClick={() => handleAutoFill(idx)}>
+              Fill
+            </button>
           </div>
         ))}
       </div>

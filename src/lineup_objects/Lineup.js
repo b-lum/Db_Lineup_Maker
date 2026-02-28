@@ -155,6 +155,58 @@ class Lineup {
    }
 
    /**
+    * Creates all possible combinations for filling remaining spots on boat.
+    * 
+    */
+
+   fill(roster) {
+      const lineup = this.clone();
+         // 1️⃣ Find empty paddler seats (rows 1–10 only)
+      const emptySeats = [];
+
+      for (let row = 1; row <= 10; row++) {
+         for (let col = 0; col < lineup.grid[row].length; col++) {
+            if (!lineup.grid[row][col]) {
+               emptySeats.push({ row, col });
+            }
+         }
+      }
+      // Get available paddlers (not already in lineup)
+      const available = roster.getAll().filter(p => 
+         !lineup.peopleMap.has(p.name)
+      );
+      // Sort heaviest first (important for balance quality)
+      available.sort((a, b) => b.weight - a.weight);
+      for (const paddler of available) {
+         if (emptySeats.length === 0) break;
+
+         // Decide which side is lighter
+         const leftDiff = lineup.leftWeight;
+         const rightDiff = lineup.rightWeight;
+
+         let chosenIndex = -1;
+
+         if (leftDiff <= rightDiff) {
+            // try to find empty LEFT seat first
+            chosenIndex = emptySeats.findIndex(s => s.col === 0);
+         }
+
+         if (chosenIndex === -1) {
+            // otherwise find RIGHT seat
+            chosenIndex = emptySeats.findIndex(s => s.col === 1);
+         }
+
+         if (chosenIndex === -1) break; // no valid seat
+
+         const seat = emptySeats.splice(chosenIndex, 1)[0];
+         lineup.addPerson(seat.row, seat.col, paddler);
+      }
+
+      return lineup;
+
+   }
+
+   /**
     * Generate a master sheet string representation of the lineup.
     * Format includes caller, row-by-row left/right names, and steer.
     * @returns {string[]} Array of strings representing the lineup for a master sheet.

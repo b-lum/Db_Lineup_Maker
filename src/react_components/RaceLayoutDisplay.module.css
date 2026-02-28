@@ -1,9 +1,6 @@
-.heatsContainer {
-  display: flex;
-  gap: 30px;
-}
 
-.heatsContainer {
+
+.lineupGridContainer {
   display: flex;
   gap: 30px;
 }

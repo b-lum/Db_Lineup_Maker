@@ -5,17 +5,17 @@
  *
  * Responsibilities:
  * - Load and maintain the master roster (from Google Sheets CSV)
- * - Manage boat definitions and their associated heats
+ * - Manage boat definitions and their associated lineupgrids
  * - Track the currently active boat
- * - Aggregate per-person participation counts across all boats/heats
+ * - Aggregate per-person participation counts across all RaceLayout/LineupGrids
  * - Coordinate data flow between UI components
  */
 
 import { useState, useEffect, useMemo } from "react";
 import { Person } from "./data_objects/Person.js"
 import { Roster } from "./data_objects/Roster.js"
-import { BoatHeats } from "./data_objects/BoatHeats.js";
-import BoatHeatsDisplay from "./react_components/BoatHeatsDisplay.jsx";
+import { RaceLayout } from "./data_objects/RaceLayout.js";
+import RaceLayoutDisplay from "./react_components/RaceLayoutDisplay.jsx";
 import CopyButton from "./react_components/CopyButton.jsx";
 import PersonCounter from "./react_components/PersonCounter.jsx";
 
@@ -69,7 +69,7 @@ function App() {
    }, [searchTerm, roster]);
 
    /**
-    * Map of boat name -> BoatHeats instance.
+    * Map of boat name -> RaceLayout instance.
     * Represents all boats currently defined in the UI.
     */
    const [boats, setBoats] = useState (() => new Map());
@@ -150,7 +150,7 @@ function App() {
 
    /**
     * Memoized map of person name -> number of times they appear
-    * across all boats, heats, and lineups.
+    * across all boats, lineupGrids, and lineups.
     *
     * Recomputes only when `boats` changes.
     */
@@ -172,8 +172,8 @@ function App() {
     * Updates a boat input row and synchronizes the boats Map.
     *
     * - Automatically appends a new empty row when typing into the last row
-    * - Preserves existing BoatHeats objects when possible
-    * - Recreates BoatHeats if the boat type changes
+    * - Preserves existing RaceLayout objects when possible
+    * - Recreates RaceLayout if the boat type changes
     *
     * @param {number} i - Index of the boat input row
     * @param {Object} changes - Partial update ({ name?, type? })
@@ -197,12 +197,12 @@ function App() {
                if (prevBoats.has(trimmed)) {
                   const prev = prevBoats.get(trimmed);
                   if (prev.boatType !== type) {
-                     nextBoats.set(trimmed, new BoatHeats(trimmed, 3, type));
+                     nextBoats.set(trimmed, new RaceLayout(trimmed, 3, type));
                   } else {
                      nextBoats.set(trimmed, prev);
                      }
                } else {
-                  nextBoats.set(trimmed, new BoatHeats(trimmed, 3, type));
+                  nextBoats.set(trimmed, new RaceLayout(trimmed, 3, type));
                }
             }
             return nextBoats;
@@ -262,7 +262,7 @@ function App() {
          </div>
 
             <div>
-               {Array.from(boats.entries()).map(([name, heats]) => (
+               {Array.from(boats.entries()).map(([name, lineupGrids]) => (
                   <button key={name} onClick={() => handleBoatClick(name)}>
                      {name}
                   </button>
@@ -271,8 +271,8 @@ function App() {
          <div className="heat-count-grid">
             <div className="heat-display">
                {activeBoat && boats.has(activeBoat) && (
-                  <BoatHeatsDisplay
-                     heats={boats.get(activeBoat)}
+                  <RaceLayoutDisplay
+                     lineupgrids={boats.get(activeBoat)}
                      roster={roster}
                      onUpdate={(newHeats) => {
                         const next = new Map(boats);

@@ -8,11 +8,11 @@ import { WomensLineup } from "../lineup_objects/WomensLineup.js";
  * Manages multiple Lineup objects per heat and provides methods
  * for moving or swapping participants within and across heats or with a roster.
  */
-class BoatHeats {
+class RaceLayout {
 
 
    /**
-    * Create a new BoatHeats instance.
+    * Create a new RaceLayout instance.
     * Initializes the specified number of heats with the appropriate lineup type.
     * @param {string} boatName - The name of the boat.
     * @param {number} numHeats - The number of heats for this boat.
@@ -147,12 +147,12 @@ class BoatHeats {
    }
 
    /**
-    * Create a shallow clone of the current BoatHeats instance.
+    * Create a shallow clone of the current RaceLayout instance.
     * Each lineup is also cloned to produce independent lineups.
-    * @returns {BoatHeats} A new BoatHeats instance with cloned lineups.
+    * @returns {RaceLayout} A new RaceLayout instance with cloned lineups.
     */
    clone() {
-      const copy = new BoatHeats(this.boatName, this.numHeats, this.boatType);
+      const copy = new RaceLayout(this.boatName, this.numHeats, this.boatType);
       copy.lineups = new Map();
 
       for (const [idx, lineup] of this.lineups) {
@@ -189,4 +189,4 @@ class BoatHeats {
    
 }
 
-export { BoatHeats };
+export { RaceLayout };
