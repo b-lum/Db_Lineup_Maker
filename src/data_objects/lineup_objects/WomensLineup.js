@@ -1,5 +1,5 @@
 import { Lineup } from "./Lineup";
-import { Person } from "../data_objects/Person";
+import { Person } from "../Person";
 
 /**
  * Class representing an all-women dragon boat lineup.

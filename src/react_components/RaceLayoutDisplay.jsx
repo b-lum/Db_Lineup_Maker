@@ -1,5 +1,5 @@
 import RLDStyle from "./RaceLayoutDisplay.module.css"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LineupGrid from "./LineupGrid.jsx";
 import Roster from "./Roster.jsx";
 
@@ -54,6 +54,51 @@ export default function RaceLayoutDisplay({
     onUpdate(next);
   };
 
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (!selected) return;
+
+      if (e.key === "Escape") {
+        setSelected(null);
+      }
+      else if (e.key === "Delete" || e.key === "Backspace") {
+        e.preventDefault();
+
+        const next = lineupgrids.clone();
+
+        console.log("Deleted Person");
+
+        next.movePerson(
+          {
+            from: {
+              type: selected.type,
+              heatIdx: selected.heatIdx,
+              row: selected.row,
+              col: selected.col,
+            },
+            to: {
+              type: "sorted"
+            }
+          },
+          roster
+        );
+
+        onUpdate(next);
+        setSelected(null);
+      }
+      // Arrow keys
+      
+      
+    }
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+
+  }, [selected, lineupgrids, roster, onUpdate]);
+    
+    
   const selectedNames = new Set();
 
   for (const lineup of lineupgrids.lineups.values()) {
@@ -69,7 +114,8 @@ export default function RaceLayoutDisplay({
 
     next.lineups.set(heatIdx, balanced);
 
-    onUpdate(next);};
+    onUpdate(next);
+  };
 
   /**
    * Generate drag-and-drop event handlers for a person cell.

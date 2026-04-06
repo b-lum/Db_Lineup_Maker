@@ -1,4 +1,4 @@
-import { Person } from "../data_objects/Person.js"; 
+import { Person } from "../Person.js"; 
 
 /**
  * Class representing a dragon boat lineup.
@@ -161,7 +161,7 @@ class Lineup {
 
    fill(roster) {
       const lineup = this.clone();
-         // 1️⃣ Find empty paddler seats (rows 1–10 only)
+
       const emptySeats = [];
 
       for (let row = 1; row <= 10; row++) {
@@ -171,39 +171,58 @@ class Lineup {
             }
          }
       }
-      // Get available paddlers (not already in lineup)
-      const available = roster.getAll().filter(p => 
-         !lineup.peopleMap.has(p.name)
-      );
-      // Sort heaviest first (important for balance quality)
+      const seatCount = emptySeats.length;
+
+      function shuffle(array) {
+         const arr = [...array];
+
+         for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+         }
+
+         return arr;
+      }
+
+      const middleRow = 5.5;
+
+      emptySeats.sort((a, b) => {
+         const distA = Math.abs(a.row - middleRow);
+         const distB = Math.abs(b.row - middleRow);
+         return distA - distB;
+      });
+
+      const available = shuffle(
+         roster.getAll().filter(p =>
+            !lineup.peopleMap.has(p.name)
+         )
+      ).slice(0, emptySeats.length);
+
       available.sort((a, b) => b.weight - a.weight);
+
       for (const paddler of available) {
          if (emptySeats.length === 0) break;
 
-         // Decide which side is lighter
-         const leftDiff = lineup.leftWeight;
-         const rightDiff = lineup.rightWeight;
+         const leftWeight = lineup.leftWeight;
+         const rightWeight = lineup.rightWeight;
 
-         let chosenIndex = -1;
+         let seatIndex = -1;
 
-         if (leftDiff <= rightDiff) {
-            // try to find empty LEFT seat first
-            chosenIndex = emptySeats.findIndex(s => s.col === 0);
+         if (leftWeight <= rightWeight) {
+            seatIndex = emptySeats.findIndex(s => s.col === 0);
          }
 
-         if (chosenIndex === -1) {
-            // otherwise find RIGHT seat
-            chosenIndex = emptySeats.findIndex(s => s.col === 1);
+         if (seatIndex === -1) {
+            seatIndex = emptySeats.findIndex(s => s.col === 1);
          }
 
-         if (chosenIndex === -1) break; // no valid seat
+         if (seatIndex === -1) break;
 
-         const seat = emptySeats.splice(chosenIndex, 1)[0];
+         const seat = emptySeats.splice(seatIndex, 1)[0];
          lineup.addPerson(seat.row, seat.col, paddler);
       }
 
       return lineup;
-
    }
 
    /**

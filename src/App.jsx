@@ -14,7 +14,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Person } from "./data_objects/Person.js"
 import { Roster } from "./data_objects/Roster.js"
-import { RaceLayout } from "./data_objects/RaceLayout.js";
+import { RaceLayout } from "./data_objects/boat_layouts/RaceLayout.js";
 import RaceLayoutDisplay from "./react_components/RaceLayoutDisplay.jsx";
 import CopyButton from "./react_components/CopyButton.jsx";
 import PersonCounter from "./react_components/PersonCounter.jsx";

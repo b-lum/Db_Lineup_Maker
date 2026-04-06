@@ -4,18 +4,18 @@ import { WomensLineup } from "../lineup_objects/WomensLineup.js";
 
 
 /**
- * Class representing a set of heats for a single boat.
+ * Class representing a set of lineups for a single boat.
  * Manages multiple Lineup objects per heat and provides methods
- * for moving or swapping participants within and across heats or with a roster.
+ * for moving or swapping participants within and across lineups or with a roster.
  */
 class RaceLayout {
 
 
    /**
     * Create a new RaceLayout instance.
-    * Initializes the specified number of heats with the appropriate lineup type.
+    * Initializes the specified number of lineups with the appropriate lineup type.
     * @param {string} boatName - The name of the boat.
-    * @param {number} numHeats - The number of heats for this boat.
+    * @param {number} numHeats - The number of lineups for this boat.
     * @param {string} boatType - Type of boat lineups: "Lineup", "Mixed", or "Womens".
     */
    constructor(boatName, numHeats, boatType) {
@@ -30,7 +30,7 @@ class RaceLayout {
       this.boatName = boatName;
       this.numHeats = numHeats;
       this.boatType = boatType;
-      console.log(`Created Heats object for boat "${this.boatName}" with type "${this.boatType}" and ${this.numHeats} heats.`);
+      console.log(`Created boat "${this.boatName}" with type "${this.boatType}" and ${this.numHeats} lineups.`);
 
    }
 
@@ -44,12 +44,12 @@ class RaceLayout {
    }
 
    /**
-    * Move or swap a person between heats or between a heat and a roster.
+    * Move or swap a person between lineups or between a lineup and a roster.
     * Supports multiple cases:
-    *   - Swap within the same heat
-    *   - Swap across different heats
-    *   - Move from roster to heat
-    *   - Move from heat to roster
+    *   - Swap within the same lineup
+    *   - Swap across different lineups
+    *   - Move from roster to lineup
+    *   - Move from lineup to roster
     * @param {Object} param0 - Object describing the move.
     * @param {Object} param0.from - Source location of the person.
     * @param {Object} param0.to - Destination location of the person.
@@ -163,9 +163,9 @@ class RaceLayout {
    }
 
    /**
-    * Generate a string representation of all heats for a master sheet.
+    * Generate a string representation of all lineups for a master sheet.
     * Combines each heat's lineup into a tab-separated format.
-    * @returns {string} Master sheet representation of all heats for this boat.
+    * @returns {string} Master sheet representation of all lineups for this boat.
     */
    mastersheetStr() {
 
