@@ -1,19 +1,37 @@
 .table {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Two columns: Person | Count */
-  gap: 8px;
-  max-width: 300px;
+  grid-template-columns: 1fr auto;
+  padding: 0 4px;
 }
 
 .header {
-  font-weight: bold;
-  color: #1a1a1a;
-  border-bottom: 1px solid #1a1a1a;
-  padding: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9aa0b8;
+  padding: 6px 10px;
+  border-bottom: 1px solid #e2e5ef;
 }
 
 .cell {
-  padding: 4px;
-  color: #1a1a1a;
-  border-bottom: 1px solid #1a1a1a;
+  padding: 5px 10px;
+  font-size: 11px;
+  color: #5a6481;
+  border-bottom: 1px solid #f0f2f8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cell:nth-child(even) {
+  font-family: 'DM Mono', monospace;
+  font-weight: 600;
+  color: #2563eb;
+  text-align: right;
+}
+
+.table > .cell:nth-child(4n+3),
+.table > .cell:nth-child(4n+4) {
+  background: #f5f6fa;
 }

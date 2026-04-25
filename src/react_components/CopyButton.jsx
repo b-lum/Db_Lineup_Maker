@@ -13,12 +13,12 @@ export default function CopyButton({ text }) {
     }
   };
 
-   return (
-      <button
-         className={copied ? "copied" : ""}
-         onClick={handleCopy}
-      >
-         {copied ? "Copied!" : "Copy to Clipboard"}
-      </button>
+  return (
+    <button
+      className={`copy-btn ${copied ? "copied" : ""}`}
+      onClick={handleCopy}
+    >
+      {copied ? "✓ Copied!" : "Copy to Clipboard"}
+    </button>
   );
 }

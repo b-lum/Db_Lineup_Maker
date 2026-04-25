@@ -146,6 +146,26 @@ class RaceLayout {
       }
    }
 
+
+   /** Add a new empty lineup at the end */
+   addBoat() {
+      const nextIdx = this.lineups.size === 0
+         ? 0
+         : Math.max(...this.lineups.keys()) + 1;
+      let lineupType = new Lineup();
+      if (this.boatType === "Mixed") lineupType = new MixedLineup();
+      else if (this.boatType === "Womens") lineupType = new WomensLineup();
+      this.lineups.set(nextIdx, lineupType);
+      this.numHeats = this.lineups.size;
+   }
+
+   /** Remove the lineup at the given index */
+   removeBoat(idx) {
+      if (!this.lineups.has(idx)) return;
+      this.lineups.delete(idx);
+      this.numHeats = this.lineups.size;
+   }
+
    /**
     * Create a shallow clone of the current RaceLayout instance.
     * Each lineup is also cloned to produce independent lineups.

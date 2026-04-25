@@ -1,83 +1,306 @@
-.page {
-  min-height: 100vh;       /* full viewport */
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
+/* ── Reset ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:        #f5f6fa;
+  --surface:   #ffffff;
+  --surface2:  #f0f2f8;
+  --border:    #e2e5ef;
+  --border2:   #c8cde0;
+  --text:      #1a1f36;
+  --text-muted:#5a6481;
+  --text-dim:  #9aa0b8;
+  --accent:    #2563eb;
+  --accent2:   #1d4ed8;
+  --green:     #16a34a;
+  --amber:     #d97706;
+  --red:       #dc2626;
+  --shadow:    0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'DM Mono', 'Fira Mono', monospace;
 }
 
-.app-container {
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+html, body, #root {
+  height: 100%;
   width: 100%;
-  min-height: 100vh;
-  background-color: #fff; /* dark grey */
-  padding: 30px;
-  box-sizing: border-box;
-}
-.app-inner {
-  width: max-content; /* shrink to content */
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-.boat-list {
+/* ── App shell ────────────────────────────────────────────────────────────── */
+.page {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
 }
 
-
-p {
-  margin-top: 20px;
-  font-weight: bold;
+/* ── Top bar ──────────────────────────────────────────────────────────────── */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  height: 52px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  z-index: 10;
+  box-shadow: var(--shadow);
 }
 
-.upload-container {
-  display: inline-flex;
+.topbar-brand {
+  display: flex;
   align-items: center;
   gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  margin-right: 4px;
 }
 
-.upload-label {
-  padding: 6px 12px;
-  background: #636060;
-  border: 1px solid #aaa;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
+.topbar-brand-icon {
+  width: 26px;
+  height: 26px;
+  background: var(--accent);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
 }
 
-.upload-label:hover {
-  background: #e9e9e9;
-}
-
-.file-status {
-  font-size: 0.85rem;
-  color: #555;
-}
-
-
-.heat-count-grid {
-  display: flex;           /* side by side layout */
-  gap: 90px;               /* space between the two sections */
-  align-items: flex-start; /* top-align both sections */
-  margin-top: 16px;
-}
-
-/* Optional: limit width of person count table */
-.person-count-display {
-  min-width: 200px;
-}
-
-/* Optional: let the heat display take up remaining space */
-.heat-display {
+.topbar-url-input {
   flex: 1;
+  max-width: 380px;
+  height: 32px;
+  padding: 0 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.topbar-url-input::placeholder { color: var(--text-dim); }
+.topbar-url-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
 }
 
-button.copied {
-  background-color: #4caf50;
-  color: white;
+.topbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  flex-shrink: 0;
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background-color: #ffff; /* dark grey / almost black */
-  color: #1a1a1a; /* optional: make default text white */
-  font-family: Arial, sans-serif;
+/* Boat tabs */
+.boat-tabs {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex: 1;
+  overflow-x: auto;
+  min-width: 0;
+}
+.boat-tabs::-webkit-scrollbar { display: none; }
+
+.boat-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.boat-tab:hover {
+  border-color: var(--border2);
+  color: var(--text);
+  background: var(--surface2);
+}
+.boat-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.boat-type-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ── Main layout ─────────────────────────────────────────────────────────── */
+.app-main {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Left boat-builder sidebar ───────────────────────────────────────────── */
+.sidebar-left {
+  width: 210px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-section-title {
+  padding: 12px 14px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.sidebar-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 10px;
+}
+.sidebar-scroll::-webkit-scrollbar { width: 4px; }
+.sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* Boat input rows inside left sidebar */
+.boat-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.boat-name-input {
+  flex: 1;
+  height: 30px;
+  padding: 0 9px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s;
+  min-width: 0;
+}
+.boat-name-input::placeholder { color: var(--text-dim); }
+.boat-name-input:focus { border-color: var(--accent); }
+
+.boat-type-select {
+  height: 30px;
+  padding: 0 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ── Right sidebar (person counter) ─────────────────────────────────────── */
+.sidebar-right {
+  width: 190px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Copy button ─────────────────────────────────────────────────────────── */
+.copy-btn {
+  margin: 10px 12px;
+  padding: 8px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  width: calc(100% - 24px);
+}
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(37,99,235,0.05); }
+.copy-btn.copied { background: rgba(22,163,74,0.08); border-color: var(--green); color: var(--green); }
+
+/* ── Content area ─────────────────────────────────────────────────────────── */
+.content-area {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  padding: 20px 24px;
+  background: var(--bg);
+}
+.content-area::-webkit-scrollbar { width: 6px; height: 6px; }
+.content-area::-webkit-scrollbar-track { background: transparent; }
+.content-area::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 10px;
+  color: var(--text-dim);
+}
+.empty-state-icon { font-size: 36px; opacity: 0.5; }
+.empty-state-text { font-size: 14px; font-weight: 600; color: var(--text-muted); }
+.empty-state-sub  { font-size: 12px; }
+
+/* Practice mode badge on boat tab */
+.boat-mode-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.25);
+  color: inherit;
+  letter-spacing: 0.04em;
+}
+.boat-tab:not(.active) .boat-mode-badge {
+  background: #f0f2f8;
+  color: #9aa0b8;
 }
